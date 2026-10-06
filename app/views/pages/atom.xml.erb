@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<%# Every event, release and product, newest first, for feed readers. Each
+    entry: its page's title, the tile's photo and text, and a summary of its
+    description. Dates: the entry's own (published) and its last edit.
+    plain: text written out escaped exactly once, even text that's already
+    marked safe as HTML (titles, the content's HTML) -%>
+<% plain = ->(text) { String.new(text.to_s) } -%>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-GB">
+  <title>Margate Electronics</title>
+  <subtitle><%= SocialMetaHelper::SITE_DESCRIPTION %></subtitle>
+  <id><%= root_url %></id>
+  <link rel="alternate" type="text/html" href="<%= root_url %>"/>
+  <link rel="self" type="application/atom+xml" href="<%= "#{request.base_url}/feed.xml" %>"/>
+  <icon><%= "#{request.base_url}/icon.svg" %></icon>
+  <updated><%= @updated.utc.iso8601 %></updated>
+  <author><name>Margate Electronics</name></author>
+<% @entries.each do |record, item| -%>
+<% url = "#{request.base_url}#{item.path}" -%>
+<% title = case record
+           when Event then heading_text(record.heading) || record.title
+           when Release then heading_text(record.headline)
+           else heading_text(record.heading) || record.title
+           end -%>
+<% date = feed.sort_date(record) -%>
+<% content = capture do %><% if item.picture && !item.picture.placeholder? %><p><img src="<%= MediaUrls.image_url(item.picture.blob, width: item.picture.width) %>" alt="<%= item.picture.alt %>"></p><% end %><% if item.caption.present? %><p><%= lines(item.caption) %></p><% end %><% end -%>
+  <entry>
+    <title><%= plain.(title) %></title>
+    <id><%= url %></id>
+    <link rel="alternate" type="text/html" href="<%= url %>"/>
+<% if date -%>
+    <published><%= date.in_time_zone("Europe/London").iso8601 %></published>
+<% end -%>
+    <updated><%= record.updated_at.utc.iso8601 %></updated>
+    <category term="<%= item.kind %>" label="<%= item.tag %>"/>
+<% if (summary = summary_of(record.try(:description))).present? -%>
+    <summary><%= plain.(summary) %></summary>
+<% end -%>
+    <content type="html"><%= plain.(content) %></content>
+  </entry>
+<% end -%>
+</feed>

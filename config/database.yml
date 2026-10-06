@@ -1,0 +1,28 @@
+# SQLite. The site is static: Rails runs only on Tomas's Mac, and the content
+# lives in storage/content.sqlite3, which is committed to the repo (see
+# CLAUDE.md, "Content database"). Development edits it; the static build reads
+# it in production mode.
+default: &default
+  adapter: sqlite3
+  max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
+
+development:
+  primary:
+    <<: *default
+    database: storage/content.sqlite3
+  # Solid Queue's own database, for local background jobs. Not committed.
+  queue:
+    <<: *default
+    database: storage/queue.sqlite3
+    migrations_paths: db/queue_migrate
+
+test:
+  <<: *default
+  database: storage/test.sqlite3
+
+# The static build (bin/static-build) runs in production mode.
+production:
+  <<: *default
+  # bin/ci builds from a migrated copy (CONTENT_DATABASE), never the real file
+  database: <%= ENV.fetch("CONTENT_DATABASE", "storage/content.sqlite3") %>

@@ -1,0 +1,116 @@
+<%# Called Index on the site; its address stays /archive/ (Cloudflare Pages
+    treats addresses with "index" in them as folder pages) %>
+<% content_for :title, "Index" %>
+<% social_meta title: "Margate Electronics index", description: "Every Margate Electronics event and release, and the artists who played and released them." %>
+<%# No section chip (that's for categories): the top line names the page %>
+<% index_page = IndexPage.current %>
+<% top_line index_page.top_line, fallback: "Index" %>
+
+<%# Every event and release as a ledger, newest first; each row opens its
+    page. Then the artists from the About page, each with where they appear. %>
+<article class="detail detail--archive">
+  <%= render "shared/page_heading", heading: index_page.heading.presence %>
+  <div class="detail__body">
+    <% if @recordings.any? %>
+      <section aria-labelledby="archive-recordings">
+        <h2 id="archive-recordings" class="tag tag--audio">Recordings</h2>
+        <%# Every recording from the nights, shuffled, one after another
+            (transport), drawn like a page player: at rest how many and
+            their total time; playing, the player of the recording that's
+            on, with [ NEXT ] %>
+        <div class="play-all" data-controller="play-all"
+             data-play-all-tracks-value="<%= @recordings.map { |track| { src: track.url, title: typography(track.title), source: track.source_label, sourceUrl: event_path(track.trackable) } }.to_json %>">
+          <div class="pl-ledger" data-play-all-target="bar">
+            <div class="pl-ledger__row">
+              <button type="button" class="pl-ledger__play" data-play-all-target="button" data-action="play-all#toggle keydown.left->play-all#back keydown.right->play-all#forward" aria-label="Play all recordings, shuffled">
+                <%# [ PLAY ALL ] to start; then [ STOP ] / [ PLAY ], as any player: it plays one recording at a time %>
+                <span class="pl-ledger__word pl-ledger__word--play">[&nbsp;PLAY&nbsp;ALL&nbsp;]</span><span class="pl-ledger__word play-all__word--resume">[&nbsp;PLAY&nbsp;]</span><span class="pl-ledger__word pl-ledger__word--pause">[&nbsp;STOP&nbsp;]</span>
+              </button>
+              <%# The title in a line that can move across when it doesn't fit, as on page players %>
+              <span class="pl-ledger__title" data-play-all-target="title"><span class="pl-ledger__line"><span><%= pluralize(@recordings.size, "recording") %>, shuffled</span></span></span>
+              <span class="pl-ledger__time" data-play-all-target="time"><%= DurationProbe.clock(@recordings.sum(&:seconds)) %></span>
+              <%# While the set plays, once there's one before: back to this recording's start, or the one before %>
+              <button type="button" class="pl-ledger__play play-all__previous" data-play-all-target="previous" data-action="play-all#previous" aria-label="Previous recording" hidden>[&nbsp;PREV&nbsp;]</button>
+              <%# While the set plays and more are to come %>
+              <button type="button" class="pl-ledger__play play-all__next" data-play-all-target="next" data-action="play-all#next" aria-label="Next recording" hidden>[&nbsp;NEXT&nbsp;]</button>
+            </div>
+            <span class="pl-ledger__rule" aria-hidden="true" data-play-all-target="ascii" data-action="click->play-all#seek">[..........]</span>
+          </div>
+        </div>
+      </section>
+    <% end %>
+
+    <section class="detail__section" aria-labelledby="archive-events">
+      <h2 id="archive-events" class="tag tag--event">Events</h2>
+      <%# Explicit table roles: on phones the rows stack (display: block),
+          and Safari's VoiceOver then stops reading it as a table without them %>
+      <table class="ledger ledger--events" role="table">
+        <thead role="rowgroup">
+          <tr role="row"><th scope="col" role="columnheader" class="ledger__date">Date</th><th scope="col" role="columnheader" class="ledger__title">Event</th><th scope="col" role="columnheader" class="ledger__lineup">Lineup</th><th scope="col" role="columnheader" class="ledger__count">Recordings</th></tr>
+        </thead>
+        <tbody role="rowgroup">
+          <% @events.each do |event| %>
+            <% recordings = event.tracks.count(&:url) %>
+            <tr role="row">
+              <td role="cell" class="ledger__date"><%= event.date.to_fs(:site) %></td>
+              <td role="cell" class="ledger__title"><%= link_to words(event.series_title), event_path(event) %></td>
+              <td role="cell" class="ledger__lineup"><%= words(event.lineup.map { |_, html| Nokogiri::HTML5.fragment(html).text.squish }.join(", ")) %></td>
+              <td role="cell" class="ledger__count"><%= pluralize(recordings, "recording") if recordings.positive? %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </section>
+
+    <% if @releases.any? %>
+      <section class="detail__section" aria-labelledby="archive-releases">
+        <h2 id="archive-releases" class="tag tag--release">Releases</h2>
+        <table class="ledger ledger--releases" role="table">
+          <thead role="rowgroup">
+            <tr role="row"><th scope="col" role="columnheader" class="ledger__no">Cat #</th><th scope="col" role="columnheader" class="ledger__artist">Artist</th><th scope="col" role="columnheader" class="ledger__title">Title</th><th scope="col" role="columnheader" class="ledger__format">Format</th><th scope="col" role="columnheader" class="ledger__date">Date</th><th scope="col" role="columnheader" class="ledger__status">Status</th></tr>
+          </thead>
+          <tbody role="rowgroup">
+            <% @releases.each do |release| %>
+              <tr role="row">
+                <td role="cell" class="ledger__no"><%= release.catalogue_number %></td>
+                <td role="cell" class="ledger__artist"><%= words(release.artist) %></td>
+                <td role="cell" class="ledger__title"><%= link_to words(release.title), release_path(release) %></td>
+                <td role="cell" class="ledger__format"><%= release.format %></td>
+                <td role="cell" class="ledger__date"><%= release.release_date&.to_fs(:site) %></td>
+                <td role="cell" class="ledger__status"><%= Feed.release_label(release) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </section>
+    <% end %>
+
+    <% if @artists.any? %>
+      <section class="detail__section" aria-labelledby="archive-artists">
+        <h2 id="archive-artists" class="tag tag--action">Artists</h2>
+        <%# Four ruled columns, A to Z down each in turn %>
+        <div class="artist-index">
+          <% @artists.each_slice((@artists.size / 4.0).ceil) do |column| %>
+            <ul>
+              <% column.each do |artist| %>
+                <li>
+                  <span class="artist-index__name"><%= words(artist.name) %></span>
+                  <% if artist.appearances.any? %>
+                    <%# "M.E.#1, M.E.#3, ME004": the commas outside the links %>
+                    <span class="artist-index__refs"><%= safe_join(artist.appearances.map { |record|
+                      if record.is_a?(Event)
+                        link_to record.short_number || record.title, event_path(record), aria: { label: "#{artist.name} at #{record.title}" }
+                      else
+                        link_to record.catalogue_number.presence || record.title, release_path(record), aria: { label: "#{artist.name}: #{record.title}" }
+                      end
+                    }, ", ") %></span>
+                  <% end %>
+                </li>
+              <% end %>
+            </ul>
+          <% end %>
+        </div>
+      </section>
+    <% end %>
+  </div>
+</article>

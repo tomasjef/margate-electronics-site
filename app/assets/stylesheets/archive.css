@@ -1,0 +1,374 @@
+/* Archive: every event and release as a ledger, then the artist index,
+   the full width of the window (inside the page margins).
+   Rows are ruled like a ledger: a hairline (the newsletter field's
+   underline) above each, and under the last, with the group gap (10)
+   either side of it. */
+.detail--archive .detail__body {
+  max-width: none;
+}
+
+/* The first section starts at the top of the page */
+.detail--archive .detail__body > :first-child {
+  margin-top: 0;
+}
+
+/* Each section's chip, the related gap (20) above its table or list */
+.detail--archive h2.tag + * {
+  margin-top: var(--gap-related);
+}
+
+.ledger {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ledger th {
+  padding: 0 var(--gap-related) var(--gap-group) 0;
+  font-size: var(--text-small);
+  font-style: italic;
+  font-weight: var(--weight-regular);
+  text-align: left;
+}
+
+.ledger tbody tr {
+  border-top: var(--stroke) solid var(--color-ink);
+}
+
+.ledger tbody tr:last-child {
+  border-bottom: var(--stroke) solid var(--color-ink);
+}
+
+.ledger td {
+  padding: var(--gap-group) var(--gap-related) var(--gap-group) 0;
+  vertical-align: top;
+}
+
+.ledger :is(th, td):last-child {
+  padding-right: 0;
+}
+
+.ledger :is(.ledger__no, .ledger__date, .ledger__count, .ledger__status) {
+  white-space: nowrap;
+}
+
+/* Column widths: the date the same in both tables; event titles wide
+   enough for "Margate Electronics #13"; the last column (recordings, status) the same in both, at the
+   right, its text under its heading */
+@media (min-width: 768px) {
+  .ledger .ledger__no {
+    width: 10ch;
+  }
+
+  .ledger .ledger__date {
+    width: 13ch;
+  }
+
+  .ledger--events .ledger__title {
+    width: 28ch;
+  }
+
+  .ledger .ledger__artist {
+    width: 28ch;
+  }
+
+  .ledger .ledger__format {
+    width: 24ch;
+  }
+
+  /* As narrow as its longest ("Tape Sold Out", "12 recordings"), so it
+     sits as close to the right edge as it can (Tomas, 5 Oct) */
+  .ledger :is(th, td):last-child {
+    width: calc(13 * 0.6 * var(--text-body));
+  }
+}
+
+/* Wide screens: one grid for the whole page, the artist index's four
+   columns (Tomas, 5 Oct). Each table starts with a narrow column as wide
+   as a date ("26 Apr 2026"), so Event and Artist line up; then Lineup and
+   Title start at the second column, Format at the third, the releases'
+   Date at the fourth. Recordings and Status share a column at the right
+   edge (Tomas, 5 Oct), Lineup running on up to it. Widths are worked out from the page body's width (container
+   units: tables treat a percentage mixed into calc() as auto); text is
+   measured in the body size (Plex characters are 0.6em), not the smaller
+   headings. */
+@media (min-width: 1240px) {
+  .detail--archive .detail__body {
+    container-type: inline-size;
+  }
+
+  .ledger {
+    --grid-col: calc((100cqw - 3 * var(--column-gap)) / 4);
+    --grid-step: calc(var(--grid-col) + var(--column-gap));
+    --narrow: calc(11 * 0.6 * var(--text-body) + var(--gap-related));
+    table-layout: fixed;
+  }
+
+  .ledger :is(.ledger__no, .ledger__date) {
+    width: var(--narrow);
+  }
+
+  .ledger--events .ledger__title,
+  .ledger .ledger__artist {
+    width: calc(var(--grid-step) - var(--narrow));
+  }
+
+  /* "Margate Electronics #13" just fits at 1240: let it run into its
+     cell's own right padding rather than wrap */
+  .ledger--events td.ledger__title {
+    white-space: nowrap;
+  }
+
+  .ledger--releases .ledger__title,
+  .ledger .ledger__format {
+    width: var(--grid-step);
+  }
+
+  /* Lineup and the releases' Date take what's left before it */
+  .ledger .ledger__lineup,
+  .ledger--releases .ledger__date {
+    width: auto;
+  }
+
+  .ledger :is(th, td):last-child {
+    width: calc(13 * 0.6 * var(--text-body));
+  }
+}
+
+/* The whole row opens the entry: its title's link covers the row */
+.ledger tr {
+  position: relative;
+}
+
+.ledger__title a {
+  text-decoration: none;
+}
+
+.ledger__title a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+/* Linked body text: white and underlined on hover and keyboard focus */
+.ledger__title a:focus-visible {
+  color: var(--color-text-white);
+  text-decoration: underline;
+}
+
+@media (hover: hover) {
+  .ledger tbody tr:hover .ledger__title a {
+    color: var(--color-text-white);
+    text-decoration: underline;
+  }
+}
+
+/* Artists: four ruled columns (two on tablets, one on phones), the name
+   left, where they appear right; the last row of each column closes it.
+   Stacked columns overlap by a hairline, so their lines meet as one. */
+.artist-index {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  column-gap: var(--column-gap);
+  align-items: start;
+}
+
+.artist-index ul {
+  margin: 0 0 calc(-1 * var(--stroke));
+  padding: 0;
+  list-style: none;
+}
+
+/* Two columns: the four lists down the first, then the second, so it
+   reads A to Z down each */
+@media (max-width: 1239px) {
+  .artist-index {
+    grid-template-rows: auto auto;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-flow: column;
+  }
+}
+
+.artist-index li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0 var(--gap-related);
+  padding-block: var(--gap-group);
+  border-top: var(--stroke) solid var(--color-ink);
+}
+
+.artist-index li:last-child {
+  border-bottom: var(--stroke) solid var(--color-ink);
+}
+
+/* A name stays on one line, and so do where they appear: when both don't
+   fit, the links move to a line of their own, at the right */
+.artist-index__name {
+  flex: none;
+  white-space: nowrap;
+}
+
+.artist-index__refs {
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.artist-index a {
+  text-decoration: none;
+}
+
+.artist-index a:focus-visible {
+  color: var(--color-text-white);
+  text-decoration: underline;
+}
+
+@media (hover: hover) {
+  .artist-index a:hover {
+    color: var(--color-text-white);
+    text-decoration: underline;
+  }
+}
+
+/* [ PLAY ALL ]: a page player (audio.css), the full width of the window
+   like the tables (Tomas, 3 Oct). [ NEXT ] after the time, while more are
+   to come. At rest its rule can't be clicked. */
+.play-all :is(.play-all__previous, .play-all__next)[hidden] {
+  display: none;
+}
+
+/* [ PLAY ALL ] only to start the set; paused, it's [ PLAY ] like any
+   player (playing, [ STOP ], audio.css) (Tomas, 5 Oct) */
+.play-all__word--resume {
+  display: none;
+}
+
+.play-all .pl-ledger.is-active:not(.is-playing) .pl-ledger__word--play {
+  display: none;
+}
+
+.play-all .pl-ledger.is-active:not(.is-playing) .play-all__word--resume {
+  display: inline;
+}
+
+.play-all .pl-ledger:not(.is-active) .pl-ledger__rule {
+  cursor: default;
+}
+
+/* [ PREV ] [ NEXT ] after the time */
+.play-all__previous {
+  margin-left: 1ch;
+}
+
+/* Close under its chip, as page players are (audio.css) */
+.detail--archive h2.tag + .play-all {
+  margin-top: var(--gap-group);
+}
+
+/* Phones: [ PLAY ALL ] (or [ STOP ]), [ PREV ] and [ NEXT ] on the first line;
+   what's on and its time on the second (the title taking the room the time
+   leaves, moving across when it doesn't fit); then the rule (Tomas, 5 Oct) */
+@media (max-width: 767px) {
+  .play-all .pl-ledger__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-areas: "play previous next" "title time time";
+    align-items: baseline;
+    gap: var(--space-4) 1ch;
+  }
+
+  .play-all .pl-ledger__play:not(.play-all__next, .play-all__previous) { grid-area: play; justify-self: start; }
+  .play-all__previous { grid-area: previous; justify-self: end; margin-left: 0; }
+  .play-all__next { grid-area: next; justify-self: end; }
+  .play-all .pl-ledger__title { grid-area: title; }
+  .play-all .pl-ledger__time { grid-area: time; justify-self: end; }
+}
+
+/* Stacked rows, where the columns don't fit side by side: each row a short
+   ruled block, the column headings only for screen readers. Releases (six
+   columns) below 1024: number, artist and title a line each, then
+   "Cassette + digital · 9 Oct 2026", then the status. Events below 768:
+   date, event, lineup, recordings. */
+@media (max-width: 1023px) {
+  .ledger--releases,
+  .ledger--releases tbody,
+  .ledger--releases tr {
+    display: block;
+  }
+
+  .ledger--releases thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .ledger--releases tbody tr {
+    padding-block: var(--gap-group);
+  }
+
+  .ledger--releases td {
+    display: block;
+    width: auto;
+    padding: 0;
+  }
+
+  .ledger--releases td:is(.ledger__format, .ledger__date) {
+    display: inline;
+  }
+
+  .ledger--releases td.ledger__date:not(:empty)::before {
+    content: " · ";
+  }
+
+  .ledger--releases td.ledger__format:empty + td.ledger__date::before {
+    content: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .ledger--events,
+  .ledger--events tbody,
+  .ledger--events tr {
+    display: block;
+  }
+
+  .ledger--events thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .ledger--events tbody tr {
+    padding-block: var(--gap-group);
+  }
+
+  .ledger--events td {
+    display: block;
+    width: auto;
+    padding: 0;
+  }
+
+  .artist-index {
+    grid-template-rows: none;
+    grid-template-columns: 1fr;
+    grid-auto-flow: row;
+  }
+}
+
+/* The rows run the full width, under where the header is pinned on other
+   pages: here it stays at the top of the page and scrolls away with it, and the grey name bar doesn't appear. The logo
+   stays pinned, turning (Tomas, 3 Oct). Phones keep theirs, with Menu. */
+@media (min-width: 768px) {
+  body:has(.detail--archive) .sticky-name {
+    display: none;
+  }
+}
+
+@media (min-width: 1240px) {
+  body:has(.detail--archive) :is(.site-header__lead, .site-header__menu) {
+    position: static;
+  }
+}

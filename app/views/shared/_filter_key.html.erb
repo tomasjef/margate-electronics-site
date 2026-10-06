@@ -1,0 +1,17 @@
+<%# Home page filters. filter: the active one, with a × beside it to clear it. %>
+<% current = filter.presence %>
+<nav aria-label="Filter" class="filter-nav<%= " filter-nav--active" if current %>">
+  <ul class="filter-key">
+    <% { "events" => ["Events", "tag--event"], "releases" => ["Releases", "tag--release"],
+         "apparel" => ["Apparel", "tag--apparel"], "prints" => ["Prints", "tag--print"] }.each do |key, (label, klass)| %>
+      <% next if counts[key].zero? %>
+      <li class="filter-key__item">
+        <%= link_to filter_path(key), class: [ "tag", klass, ("is-current" if current == key) ],
+              aria: { current: (current == key ? "page" : nil) } do %><%= label %><span class="filter-key__count">(<%= counts[key] %>)</span><% end %>
+        <% if current == key %>
+          <%= link_to "×", root_path, class: "tag filter-key__clear", aria: { label: "Clear filter, show all" } %>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+</nav>

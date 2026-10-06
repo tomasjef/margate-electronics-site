@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+# Serve the app on the local network so it can be opened on a phone.
+# Runs alongside bin/dev (which must be running): a second Rails server on
+# port 3001, reachable from other devices on the same Wi-Fi. Styles and
+# scripts come through Rails from the Vite dev server, so the phone only
+# talks to this one address.
+# Settings from .env (MailerLite), as foreman loads them for bin/dev
+ENV_FILE="$(dirname "$0")/../.env"
+if [ -f "$ENV_FILE" ]; then set -a; . "$ENV_FILE"; set +a; fi
+IP=$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1)
+echo "On your phone (same Wi-Fi), open: http://${IP}:3001"
+echo "If macOS asks whether to allow incoming connections for ruby, choose Allow."
+echo "Ctrl-C to stop."
+exec bin/rails server -b 0.0.0.0 -p 3001 -P tmp/pids/lan.pid

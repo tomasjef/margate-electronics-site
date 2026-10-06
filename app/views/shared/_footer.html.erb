@@ -1,0 +1,16 @@
+<footer class="site-footer">
+  <% if section.present? %>
+    <%# Phones: Back and Next side by side at the end of the page. Wider,
+        each is fixed on its own (layout.css). %>
+    <div class="entry-nav">
+      <%= render "shared/back_link", section: section %>
+      <% if (next_path = Feed.new.next_path(request.path)) %>
+        <%= link_to "Next →", next_path, class: "next-link trim", rel: "next" %>
+      <% end %>
+    </div>
+  <% end %>
+  <%= link_to root_path, class: "site-footer__logo" do %>
+    <%= image_tag "me-logo.svg", alt: "Margate Electronics home", width: 50, height: 50,
+          data: { controller: "logo-spin" } %>
+  <% end %>
+</footer>

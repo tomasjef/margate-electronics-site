@@ -1,0 +1,70 @@
+#!/usr/bin/env sh
+# Publishes the content: moves the latest edits into the database file itself,
+# commits that file (and nothing else), and pushes main, which deploys the
+# site. Run it after editing in the admin.
+set -eu
+cd "$(dirname "$0")/.."
+
+DB=storage/content.sqlite3
+ACTIONS=https://github.com/tomasjef/margate-electronics-app/actions
+# The address the site is built for (deploy.yml's SITE_URL: the live site since 1 Oct)
+SITE=$(sed -n 's/^ *SITE_URL: *//p' .github/workflows/deploy.yml | head -n 1)
+
+# Waits for GitHub to deploy the pushed commit, then says it's live. Needs
+# the GitHub CLI (gh); without it, points at the Actions page instead.
+wait_for_deploy() {
+  if ! command -v gh >/dev/null 2>&1; then
+    echo "Pushed. The site updates in a minute or two: $ACTIONS"
+    return
+  fi
+  echo "Pushed. Deploying, about a minute..."
+  run=""
+  tries=0
+  while [ -z "$run" ] && [ "$tries" -lt 20 ]; do
+    run=$(gh run list --commit "$1" --workflow Deploy --json databaseId --jq '.[0].databaseId' 2>/dev/null || true)
+    [ -n "$run" ] || { tries=$((tries + 1)); sleep 3; }
+  done
+  if [ -z "$run" ]; then
+    echo "Couldn't find the deploy; check $ACTIONS"
+  elif gh run watch "$run" --exit-status >/dev/null 2>&1; then
+    echo "Live: $SITE"
+  else
+    echo "bin/publish: the deploy failed, so the site hasn't changed: $ACTIONS/runs/$run" >&2
+    exit 1
+  fi
+}
+
+branch=$(git rev-parse --abbrev-ref HEAD)
+if [ "$branch" != main ]; then
+  echo "bin/publish: you're on $branch; publish from main" >&2
+  exit 1
+fi
+
+# Stock from Bandcamp first (read only there), so it's committed with the
+# content. Never stops the publish: without keys, or if Bandcamp doesn't
+# answer, the stock last saved stays.
+( set -a; [ -f .env ] && . ./.env; set +a; bin/rails bandcamp:stock ) || echo "bin/publish: couldn't read stock from Bandcamp; publishing the stock last saved" >&2
+
+# SQLite keeps recent writes in the -wal file, which isn't committed. The
+# checkpoint copies them into the database; its first column is 1 if it
+# couldn't finish because the database was busy.
+busy=$(sqlite3 "$DB" "PRAGMA wal_checkpoint(TRUNCATE);" | cut -d'|' -f1)
+if [ "$busy" != "0" ]; then
+  echo "bin/publish: the database is busy (something is writing to it); try again in a moment" >&2
+  exit 1
+fi
+
+if git diff --quiet -- "$DB"; then
+  echo "No content changes since the last publish."
+else
+  git commit --quiet -m "Publish content, $(date '+%-d %b %Y %H:%M')" -- "$DB"
+  echo "Committed the content."
+fi
+
+git fetch --quiet origin main
+if [ "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)" ]; then
+  echo "Nothing new to push; the live site is up to date."
+else
+  git push --quiet origin main
+  wait_for_deploy "$(git rev-parse HEAD)"
+fi

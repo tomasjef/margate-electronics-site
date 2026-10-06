@@ -1,0 +1,15 @@
+<%# Size or colour chips (radio buttons): the chosen one pink, the others plain,
+    sold-out ones faded and disabled. The variant controller keeps them in step
+    with the stock as the choice changes. %>
+<fieldset class="chips">
+  <legend class="visually-hidden"><%= label %></legend>
+  <% options.each do |option| %>
+    <% sold_out = unavailable.include?(option) %>
+    <label class="chip<%= " chip--sold-out" if sold_out %>">
+      <input type="radio" class="visually-hidden" name="<%= label.downcase %>" value="<%= option %>"
+             <%= "checked" if option == chosen %> <%= "disabled" if sold_out %>
+             data-variant-target="<%= label.downcase %>" data-action="change->variant#update">
+      <%= option %><span class="visually-hidden chip__status"><%= ", sold out" if sold_out %></span>
+    </label>
+  <% end %>
+</fieldset>

@@ -1,0 +1,10 @@
+<header class="site-header">
+  <div class="site-header__lead trim">
+    <%= content_for?(:header_lead) ? yield(:header_lead) : link_to("Margate Electronics", root_path) %>
+  </div>
+  <% if content_for?(:header_status) %>
+    <div class="site-header__status trim"><%= yield :header_status %></div>
+  <% end %>
+  <%# Every link is in the menu (Tomas, 5 Oct); later Cart beside it %>
+  <%= render "shared/menu_button", extra_class: "site-header__menu" %>
+</header>

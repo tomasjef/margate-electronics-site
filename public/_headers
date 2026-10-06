@@ -1,0 +1,12 @@
+# Cloudflare Pages headers. Only margate-electronics.org is the real site: the
+# staging address and the pages.dev one serve the same files but must never
+# show up in search, before or after the launch cutover (robots.txt follows
+# SITE_URL, so after the cutover it allows indexing everywhere).
+https://staging.margate-electronics.org/*
+  X-Robots-Tag: noindex
+
+https://margate-electronics.pages.dev/*
+  X-Robots-Tag: noindex
+
+https://:version.margate-electronics.pages.dev/*
+  X-Robots-Tag: noindex

@@ -1,0 +1,172 @@
+/* The now-playing bar (shared/_transport): shows while a recording plays or
+   is paused, and stays across pages. A full-width strip at the very bottom
+   of the window, on a darker grey, in Ledger style:
+   [ STOP ]  title · source  [|||.......]  0:03 / 33:28  [ CLOSE ]
+   The footer (About · E-mail, Back, the logo) lifts by the strip's height
+   (--transport-height, set by the transport controller) while it shows.
+   Hidden on the page whose own player is playing (no doubling). */
+.transport__bar {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 45;
+  display: flex;
+  align-items: baseline;
+  gap: 2ch;
+  padding: var(--space-15) var(--page-margin);
+  background: var(--color-bar-bg);
+  color: var(--color-ink);
+}
+
+/* Cap height to baseline, like the footer links */
+.transport__bar > * {
+  text-box: trim-both cap alphabetic;
+}
+
+.transport__bar[hidden] {
+  display: none;
+}
+
+/* [ STOP ] / [ PLAY ], [ NEXT ] and [ CLOSE ]: bracketed words, no box */
+.transport__button,
+.transport__next,
+.transport__close {
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.transport__button [hidden],
+.transport__next[hidden] {
+  display: none;
+}
+
+.transport__title {
+  flex: 0 1 auto;
+  min-width: 0;
+  /* Clip only sideways (for the …): the trimmed box is cap height, and
+     letters like h, l and f rise above it */
+  overflow-x: clip;
+  overflow-y: visible;
+  color: inherit;
+  font-style: italic;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The title links to its page: white and underlined on hover and focus,
+   like linked text; the bracketed controls white (Tomas, 3 Oct) */
+.transport__title:focus-visible {
+  color: var(--color-text-white);
+  text-decoration: underline;
+}
+
+:is(.transport__button, .transport__next, .transport__close):focus-visible {
+  color: var(--color-text-white);
+}
+
+@media (hover: hover) {
+  .transport__title:hover {
+    color: var(--color-text-white);
+    text-decoration: underline;
+  }
+
+  :is(.transport__button, .transport__next, .transport__close):hover {
+    color: var(--color-text-white);
+  }
+}
+
+/* The progress rule fills the space left; a click on it seeks */
+.transport__rule {
+  display: block;
+  flex: 1;
+  min-width: 10ch;
+  margin: 0;
+  /* Not trimmed or clipped top and bottom: [ and ] are taller than capitals */
+  overflow-x: clip;
+  overflow-y: visible;
+  color: inherit;
+  text-box: none;
+}
+
+.transport__rule .pl-ledger__rest {
+  color: inherit;
+}
+
+.transport__time {
+  flex: none;
+  font-style: italic;
+  font-variant-numeric: tabular-nums;
+}
+
+:root:has(.transport__bar:not([hidden])) .site-footer__logo {
+  bottom: calc(var(--page-margin) + var(--transport-height, 0px));
+}
+
+@media (min-width: 768px) and (max-width: 1239px) {
+  :root:has(.transport__bar:not([hidden])) :is(.back-link, .next-link) {
+    bottom: calc(var(--page-margin) + var(--transport-height, 0px));
+  }
+}
+
+:root:has(.transport__bar:not([hidden])) body {
+  padding-bottom: var(--transport-height, 0px);
+}
+
+/* Phones, kept minimal, on one line: [ STOP ], what's playing and the
+   elapsed time; paused, [ PLAY ] and [ CLOSE ] in the time's place. A title
+   too long for its line moves across it (the transport controller's
+   scrollTitle). The source, the total time and the rule are left to the
+   page's own player. */
+@media (max-width: 767px) {
+  .transport__title {
+    flex: 1;
+  }
+
+  /* 44px tall tap areas that reach the screen's edge, without moving the
+     words: padding out, the same negative margin back */
+  .transport__button,
+  .transport__close {
+    margin-block: calc(-1 * var(--tap-pad-block));
+    padding-block: var(--tap-pad-block);
+  }
+
+  .transport__button {
+    margin-inline: calc(-1 * var(--page-margin)) calc(-1 * var(--tap-pad-inline));
+    padding-inline: var(--page-margin) var(--tap-pad-inline);
+  }
+
+  .transport__close {
+    margin-inline: calc(-1 * var(--tap-pad-inline)) calc(-1 * var(--page-margin));
+    padding-inline: var(--tap-pad-inline) var(--page-margin);
+  }
+
+  .transport__bar :is(.transport__source, .transport__total, .transport__rule, .transport__next) {
+    display: none;
+  }
+
+  .transport__bar:not(.is-paused) .transport__close,
+  .transport__bar.is-paused .transport__time {
+    display: none;
+  }
+}
+
+/* The moving title: the line and a copy of it after a gap, so it comes
+   round without a jump; cut off at the edge rather than ending in … */
+.transport__title.is-scrolling {
+  text-overflow: clip;
+}
+
+.transport__title.is-scrolling .transport__line {
+  display: inline-block;
+}
+
+.transport__copy {
+  margin-left: 4ch;
+}

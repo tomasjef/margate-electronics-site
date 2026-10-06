@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+  <head>
+    <%# First in the head: static hosts may not send the encoding with the file %>
+    <meta charset="utf-8">
+    <%# safe_join: the title is escaped once (joined into a plain string, "&" came out as "&amp;") %>
+    <title><%= content_for?(:title) ? safe_join([ yield(:title), " · Margate Electronics" ]) : "Margate Electronics" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%# One look in light and dark mode: browsers that darken pages themselves
+        (Samsung Internet, Chrome's auto dark on Android) leave it alone %>
+    <meta name="color-scheme" content="only light">
+    <%= render "shared/social_meta" %>
+    <meta name="theme-color" content="#cccccc">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%# The ME logo (app/assets/images/me-logo.svg). favicon.ico and
+        apple-touch-icon.png were made from it once:
+          rsvg-convert -w 16 icon.svg -o 16.png; rsvg-convert -w 32 icon.svg -o 32.png
+          magick 16.png 32.png favicon.ico
+          rsvg-convert -w 140 icon.svg -o 140.png
+          magick -size 180x180 xc:'#cccccc' 140.png -gravity center -composite -strip apple-touch-icon.png %>
+    <link rel="icon" href="/favicon.ico" sizes="32x32">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="alternate" type="application/atom+xml" title="Margate Electronics" href="/feed.xml">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <%# Kana and kanji (a few names): the weights the site uses, 400 and 500
+        (headings), loaded without holding up the page; Plex shows first %>
+    <% noto = "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500&display=swap" %>
+    <link rel="stylesheet" href="<%= noto %>" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="<%= noto %>"></noscript>
+
+    <%= vite_stylesheet_tag "application.css" %>
+    <%= vite_client_tag %>
+    <%= vite_typescript_tag "application" %>
+    <%= yield :head %>
+  </head>
+
+  <body data-controller="dialog scroll-state menu shortcuts" data-action="keydown.esc@window->menu#close">
+    <%= render "shared/header" %>
+    <%# Below 1240px: a grey bar that keeps the site name and Newsletter (Menu on phones) at the top while scrolling. %>
+    <div class="sticky-name">
+      <div class="trim sticky-name__lead">
+        <%# Just the name: the category chip scrolls away with the page %>
+        <%= link_to "Margate Electronics", root_path %>
+      </div>
+      <%= render "shared/menu_button", extra_class: "sticky-name__menu" %>
+    </div>
+    <%= render "shared/menu" %>
+    <main id="main" class="page">
+      <%= yield %>
+    </main>
+    <%= render "shared/footer", section: (yield(:section) if content_for?(:section)) %>
+    <%= render "shared/dialogs" %>
+    <%= render "shared/transport" %>
+  </body>
+</html>

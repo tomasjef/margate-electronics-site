@@ -1,0 +1,21 @@
+<%# The site's one audio element, kept across page changes (data-turbo-permanent),
+    so a recording plays on while you browse. The bar shows while something is
+    playing or paused: [ STOP ] / [ PLAY ], what it is (a link back to its
+    page), the progress rule, the time, and [ CLOSE ]. %>
+<div id="transport" class="transport" data-turbo-permanent data-controller="transport">
+  <audio preload="none" data-transport-target="audio"
+         data-action="timeupdate->transport#update loadedmetadata->transport#update play->transport#update pause->transport#update playing->transport#soundStarted ended->transport#finished
+                     loadedmetadata->transport#syncPosition durationchange->transport#syncPosition play->transport#syncPosition pause->transport#syncPosition seeked->transport#syncPosition ratechange->transport#syncPosition"></audio>
+  <div class="transport__bar" data-transport-target="bar" role="region" aria-label="Now playing" hidden>
+    <button type="button" class="transport__button" data-transport-target="button" data-action="transport#toggle" aria-label="Stop">
+      <span class="transport__word--stop">[&nbsp;STOP&nbsp;]</span><span class="transport__word--play" hidden>[&nbsp;PLAY&nbsp;]</span>
+    </button>
+    <a class="transport__title" data-transport-target="link" href="/"></a>
+    <span class="transport__rule pl-ledger__rule" data-transport-target="rule"
+          data-action="click->transport#seekAt" aria-hidden="true">[..........]</span>
+    <span class="transport__time" data-transport-target="time"></span>
+    <%# While [ PLAY ALL ] plays (wider screens; phones skip from the lock screen) %>
+    <button type="button" class="transport__next" data-transport-target="next" data-action="transport#next" aria-label="Next recording" hidden>[&nbsp;NEXT&nbsp;]</button>
+    <button type="button" class="transport__close" data-action="transport#close" aria-label="Close the player">[&nbsp;CLOSE&nbsp;]</button>
+  </div>
+</div>

@@ -1,0 +1,12 @@
+<%# Shops grouped by city, read like the About text: the city, its shops one
+    a line under it, a blank line between cities. stockists: Stockist.by_city %>
+<dl class="stockists">
+  <% stockists.each do |city, shops| %>
+    <div class="stockists__city">
+      <dt><%= words(city) %></dt>
+      <% shops.each do |shop| %>
+        <dd><%= external_link_to words(shop.name), shop.url %></dd>
+      <% end %>
+    </div>
+  <% end %>
+</dl>

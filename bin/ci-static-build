@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+# bin/ci's static build: from a copy of the content database, migrated to the
+# code being checked, so the real content database is never migrated here
+# (that happens only together with the code's commit).
+set -eu
+cd "$(dirname "$0")/.."
+
+copy=tmp/ci-content.sqlite3
+mkdir -p tmp
+rm -f "$copy" "$copy-wal" "$copy-shm"
+# A consistent copy, including edits still in the -wal file
+sqlite3 storage/content.sqlite3 ".backup '$copy'"
+
+export CONTENT_DATABASE="$copy"
+RAILS_ENV=production SECRET_KEY_BASE_DUMMY=1 RAILS_LOG_LEVEL=warn bin/rails db:migrate
+bin/static-build "$@"
+rm -f "$copy" "$copy-wal" "$copy-shm"

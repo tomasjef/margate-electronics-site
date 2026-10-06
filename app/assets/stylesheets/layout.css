@@ -1,0 +1,506 @@
+/* Header: absolute over the top margin on wide screens, in flow on phones */
+.site-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: var(--space-20);
+  padding: var(--page-margin);
+}
+
+.site-header:has(.site-header__status) {
+  grid-template-columns: 1fr auto 1fr;
+}
+
+.site-header__lead { grid-column: 1; }
+
+.site-header__status {
+  grid-column: 2;
+  text-align: center;
+}
+
+.site-header a:not(.is-current),
+.sticky-name a:not(.is-current),
+.site-footer a {
+  text-decoration: none;
+}
+
+/* Hover underlines only with a real pointer: on phones a tap leaves a link
+   "hovered", and only links in body text are underlined there */
+@media (hover: hover) {
+  .site-header a:hover,
+  .sticky-name a:hover,
+  .site-footer a:hover {
+    text-decoration: underline;
+  }
+}
+
+/* Footer: in flow at the end of the page, at every size (the logo pinned) */
+.site-footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-20);
+  margin-top: auto;
+  padding: var(--page-margin);
+}
+
+/* The logo stays in the bottom-right corner at every size, turning with scroll */
+.site-footer__logo {
+  position: fixed;
+  right: var(--page-margin);
+  bottom: var(--page-margin);
+  z-index: 40;
+  width: var(--logo-size);
+  height: var(--logo-size);
+}
+
+
+/* Even space above and below the content. Phones: the header's and footer's
+   20 padding plus this make 40 at both ends. */
+.page {
+  width: 100%;
+  padding: calc(var(--gap-section) - var(--page-margin)) var(--page-margin);
+}
+
+@media (min-width: 768px) {
+  .site-header {
+    position: absolute;
+    inset: 0 0 auto;
+  }
+
+  /* Footer is in flow here: its 20 padding plus this make 80 */
+  .page {
+    padding-top: var(--page-space);
+    padding-bottom: calc(var(--page-space) - var(--page-margin));
+  }
+}
+
+/* The site name stays put while scrolling: below 1240 a grey bar with just
+   "Margate Electronics" (the category chip scrolls away with the page). */
+.sticky-name {
+  display: none;
+}
+
+@media (max-width: 1239px) {
+  /* A grey bar at the top, so content passes under it cleanly */
+  .is-scrolled .sticky-name {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: start;
+    gap: var(--space-20);
+    padding: var(--page-margin);
+    background: var(--color-bg);
+  }
+}
+
+@media (max-width: 767px) {
+  .site-header:has(.site-header__status) {
+    grid-template-columns: 1fr auto;
+  }
+
+  /* Status on its own centred row, a section gap (40) below the header row */
+  .site-header__status {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    margin-top: calc(var(--gap-section) - var(--space-20));
+    text-align: center;
+  }
+
+}
+
+@media (min-width: 1240px) {
+  /* Wide screens: the header's name (and Menu, below) pinned in the margins */
+  .site-header__lead {
+    position: fixed;
+    top: var(--page-margin);
+    left: var(--page-margin);
+    z-index: 50;
+  }
+
+  .is-scrolled .lead-rest {
+    display: none;
+  }
+
+
+}
+
+/* "← Back" and "Next →" on inner pages (Next: the next entry in the home
+   page's order). Phones: side by side at the end of the page, level with the
+   centre of the logo. Wider: fixed, bottom left, Next after Back; at 1240+
+   Back in the left margin and Next in the right, both centred vertically. */
+.back-link,
+.next-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.entry-nav {
+  display: flex;
+  gap: var(--gap-related);
+}
+
+@media (min-width: 768px) {
+  .entry-nav {
+    display: contents;
+  }
+
+  .back-link,
+  .next-link {
+    position: fixed;
+    bottom: var(--page-margin);
+    z-index: 40;
+  }
+
+  .back-link {
+    left: var(--page-margin);
+  }
+
+  /* After "← Back" (6 characters) */
+  .next-link {
+    left: calc(var(--page-margin) + 6ch + var(--gap-related));
+  }
+}
+
+.back-link:focus-visible,
+.next-link:focus-visible {
+  text-decoration: underline;
+}
+
+@media (hover: hover) {
+  .back-link:hover,
+  .next-link:hover {
+    text-decoration: underline;
+  }
+}
+
+/* The footer is in the page's flow at every size, at the end of the page
+   (Tomas, 5 Oct: Newsletter Sign Up there, not pinned); the logo and, wide,
+   Back / Next stay pinned. Below 1240: room at the bottom so its link sits
+   above the fixed Back link and logo. */
+@media (max-width: 1239px) {
+  .site-footer {
+    padding-bottom: calc(var(--logo-size) + 2 * var(--page-margin));
+  }
+}
+
+/* Wide screens: in the left margin, centred vertically, where the home filters sit */
+@media (min-width: 1240px) {
+  .back-link,
+  .next-link {
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+  }
+
+  .next-link {
+    right: var(--page-margin);
+    left: auto;
+  }
+}
+
+/* Breadcrumb section chip: text on the header line, chip padding around it */
+.breadcrumb__chip {
+  margin-block: calc(-1 * var(--tag-pad-block));
+  margin-inline-start: var(--gap-group);
+}
+
+.site-header a.breadcrumb__chip:hover {
+  text-decoration: none;
+}
+
+/* Phones: the name and the section chip don't fit beside Newsletter, so the
+   chip sits on its own line under the name */
+@media (max-width: 767px) {
+  .site-header__lead:has(.breadcrumb__chip) {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--gap-group);
+  }
+
+  .breadcrumb__chip {
+    margin: 0;
+  }
+
+  /* A flex column loses the container's text trim: trim the name itself */
+  .site-header__lead:has(.breadcrumb__chip) > a:first-child {
+    text-box: trim-both cap alphabetic;
+  }
+}
+
+/* Phones: the site name (the way home) gets a finger-sized tap area, an
+   invisible layer reaching above and below it, so nothing moves (padding
+   shifted the name in Safari's trimmed header line) */
+@media (max-width: 767px) {
+  :is(.site-header__lead, .sticky-name__lead) > a:first-child,
+  .site-header__lead > p > a:first-child {
+    position: relative;
+  }
+
+  :is(.site-header__lead, .sticky-name__lead) > a:first-child::after,
+  .site-header__lead > p > a:first-child::after {
+    content: "";
+    position: absolute;
+    inset: calc(-1 * var(--tap-pad-block)) 0;
+  }
+}
+
+/* ---------- Menu ----------
+   "Menu" at the top right at every size, where the links were; it drops
+   the menu block (shared/_menu) from the top of the window. Its tap area is
+   44px tall; the negative margin keeps the word where it is. */
+.menu-button {
+  margin: calc(-1 * var(--tap-pad-block)) calc(-1 * var(--tap-pad-inline));
+  padding: var(--tap-pad-block) var(--tap-pad-inline);
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .menu-button:hover {
+    text-decoration: underline;
+  }
+}
+
+.site-header__menu {
+  grid-column: -2;
+  justify-self: end;
+}
+
+.sticky-name__lead {
+  grid-column: 1;
+}
+
+.sticky-name__menu {
+  grid-column: 2;
+  justify-self: end;
+}
+
+/* Wide screens: pinned top right, as the links were */
+@media (min-width: 1240px) {
+  .site-header__menu {
+    position: fixed;
+    top: var(--page-margin);
+    right: var(--page-margin);
+    z-index: 50;
+  }
+}
+
+/* The block: over everything, the page blurred and still behind it */
+.menu-drop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+}
+
+.menu-drop[hidden] {
+  display: none;
+}
+
+:root.has-menu {
+  overflow: hidden;
+}
+
+.menu-drop__backdrop {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--color-bg) 40%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+/* The page's grey, blue text in the body type, the blurred page below it:
+   the name and Close where the name and Menu always are; the links
+   on the page's four columns (the Index's grid) */
+/* The name, the three groups of links and Close side by side, equally
+   spaced across the window (Tomas, 5 Oct); phones: one column, below */
+.menu-drop__panel {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  column-gap: var(--column-gap);
+  /* After the last link two blank lines of solid grey, then its last 80
+     feathers away into the page (Tomas, 5 Oct) */
+  padding: var(--page-margin) var(--page-margin) calc(2 * var(--text-body) * var(--line-normal) + var(--page-space));
+  background: var(--color-bg);
+  color: var(--color-ink);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - var(--page-space)), transparent);
+}
+
+/* On one line: at tablet widths it runs on into the gap before the links */
+.menu-drop__name {
+  white-space: nowrap;
+}
+
+.menu-drop__close {
+  margin: calc(-1 * var(--tap-pad-block)) calc(-1 * var(--tap-pad-inline));
+  padding: var(--tap-pad-block) var(--tap-pad-inline);
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.menu-drop__links {
+  display: grid;
+  gap: var(--space-10);
+  grid-row: 1;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menu-drop__links {
+  white-space: nowrap;
+}
+
+.menu-drop a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* The page you're on: a dot before it, hanging in the space to its left
+   so the words stay aligned (not colour alone; Tomas, 5 Oct). In the line
+   of text (pulled left by a negative margin), so it sits on the words'
+   baseline wherever the link's tap area reaches. Pointed at or focused:
+   white. */
+.menu-drop a[aria-current="page"]::before {
+  content: "•" / "";
+  display: inline-block;
+  width: 1ch;
+  margin-left: -1.5ch;
+  margin-right: 0.5ch;
+}
+
+.menu-drop a:focus-visible,
+.menu-drop__close:focus-visible {
+  color: var(--color-text-white);
+}
+
+@media (hover: hover) {
+  .menu-drop a:hover,
+  .menu-drop__close:hover {
+    color: var(--color-text-white);
+  }
+}
+
+/* Phones: blue with white text (Tomas, 5 Oct); pointed at or focused
+   underlined, focus outlined in white to show on the blue */
+@media (max-width: 767px) {
+  .menu-drop__panel {
+    background: var(--color-ink);
+    color: var(--color-text-white);
+  }
+
+  .menu-drop :is(a, .menu-drop__close):focus-visible {
+    color: inherit;
+    outline-color: var(--color-text-white);
+    text-decoration: underline;
+  }
+
+}
+
+/* Phones: the name and Close on the first row, then the links in one
+   column, a section gap (40) between the groups, as between the name and
+   the links. Tablets keep the wide screens' columns (Tomas, 5 Oct: as far
+   down as they fit; at 768 "↑ Instagram" still clears Close) */
+@media (max-width: 767px) {
+  .menu-drop__panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    row-gap: var(--gap-section);
+  }
+
+  .menu-drop__close {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+  }
+
+  .menu-drop__links:nth-of-type(n) {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+
+  /* Each link a 44px tap target, the words where they were */
+  .menu-drop__links a {
+    display: block;
+    margin-block: calc(-1 * var(--tap-pad-block) + var(--space-10) / 2);
+    padding-block: calc(var(--tap-pad-block) - var(--space-10) / 2);
+  }
+}
+
+/* Phones: the page's grey (Tomas, 5 Oct: tried the audio bar's darker
+   grey), no fade, no blurred page (blurring costs older phones). At the top of the page the block sits in the page,
+   in the header's place, and pushes the page down; mid-page (from the grey
+   bar) it rolls down over the page where you are (Tomas, 5 Oct). A tap on
+   the page closes it. */
+@media (max-width: 767px) {
+  .menu-drop__panel {
+    padding-bottom: var(--gap-section);
+    mask-image: none;
+  }
+
+  .menu-drop__backdrop {
+    background: none;
+    backdrop-filter: none;
+  }
+
+  :root.menu-flow .menu-drop {
+    position: static;
+  }
+
+  :root.menu-flow .menu-drop__backdrop {
+    display: none;
+  }
+
+  :root.menu-flow .site-header {
+    display: none;
+  }
+
+  /* A hairline marks where it ends, over the page mid-page and in the page
+     at the top (Tomas, 5 Oct) */
+  :is(:root.has-menu, :root.menu-flow) .menu-drop__panel {
+    border-bottom: var(--stroke) solid var(--color-ink);
+  }
+
+  /* In the page: 40 from the last link to the line, as between its groups,
+     and 40 from the line to what's next (with the page's own top space) */
+  :root.menu-flow .menu-drop {
+    margin-bottom: var(--space-15);
+  }
+}
+
+@media (max-width: 767px) {
+  .filter-nav {
+    display: none;
+  }
+
+  /* Home: the description stops well short of Menu */
+  .site-header__lead:has(.lead-rest) {
+    max-width: 28ch;
+  }
+
+  /* Footer: Back on the left, vertically centred on the fixed logo at the
+     bottom right; the footer is as tall as the logo, so nothing hides under it */
+  .site-footer {
+    align-items: center;
+    min-height: calc(var(--logo-size) + 2 * var(--page-margin));
+    padding-bottom: var(--page-margin);
+  }
+
+
+  .site-footer :is(.back-link, .next-link) {
+    margin: calc(-1 * var(--tap-pad-block)) calc(-1 * var(--tap-pad-inline));
+    padding: var(--tap-pad-block) var(--tap-pad-inline);
+  }
+}

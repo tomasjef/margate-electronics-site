@@ -1,0 +1,180 @@
+/* The full-screen lightbox: site grey, generous padding */
+.dialog {
+  width: 100vw;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: var(--dialog-padding);
+  border: 0;
+  background: var(--color-bg);
+  color: var(--color-ink);
+}
+
+.dialog[open] {
+  display: grid;
+  place-items: center;
+}
+
+.dialog::backdrop {
+  background: var(--color-bg);
+}
+
+/* Dialogs keep the site name top left, in its page position */
+.dialog__brand {
+  position: fixed;
+  top: var(--page-margin);
+  left: var(--page-margin);
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .dialog__brand:hover {
+    text-decoration: underline;
+  }
+}
+
+/* Text controls in the corners: Close top right, Prev and Next along the bottom */
+.dialog__close,
+.dialog__prev,
+.dialog__next {
+  position: fixed;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.dialog__close {
+  top: var(--page-margin);
+  right: var(--page-margin);
+}
+
+/* Wide screens: centred vertically at the left and right edges */
+.dialog__prev {
+  top: 50%;
+  left: var(--page-margin);
+  transform: translateY(-50%);
+}
+
+.dialog__next {
+  top: 50%;
+  right: var(--page-margin);
+  transform: translateY(-50%);
+}
+
+/* Phones: the image fills the width, so Prev and Next sit at the bottom,
+   Prev at the left margin and Next at the right */
+@media (max-width: 767px) {
+  .dialog__prev,
+  .dialog__next {
+    top: auto;
+    bottom: var(--page-margin);
+    transform: none;
+  }
+
+  .dialog__prev {
+    right: auto;
+    left: var(--page-margin);
+  }
+
+  .dialog__next {
+    right: var(--page-margin);
+    left: auto;
+  }
+}
+
+.dialog__prev[hidden],
+.dialog__next[hidden] {
+  display: none;
+}
+
+:is(.dialog__close, .dialog__prev, .dialog__next):focus-visible {
+  text-decoration: underline;
+}
+
+@media (hover: hover) {
+  :is(.dialog__close, .dialog__prev, .dialog__next):hover {
+    text-decoration: underline;
+  }
+}
+
+.dialog__figure {
+  display: grid;
+  justify-items: center;
+  gap: var(--gap-group);
+  max-width: 100%;
+}
+
+/* Until a photo being opened has loaded, its caption waits with it (still
+   focusable, so focus lands on the image as usual) */
+.dialog__figure.is-loading {
+  opacity: 0;
+}
+
+.dialog__image {
+  max-width: 100%;
+  max-height: calc(100dvh - 2 * var(--dialog-padding) - 2 * var(--gap-related));
+  object-fit: contain;
+}
+
+/* While the photo loads: its dithered stand-in at the photo's size (sized by
+   the dialog controller), blown up into square blocks, as on the pages */
+.dialog__image.is-dithering {
+  background: var(--dither) center / 100% 100% no-repeat;
+  image-rendering: pixelated;
+}
+
+/* With more than one image, the image itself advances */
+.dialog:has(.dialog__next:not([hidden])) .dialog__image {
+  cursor: pointer;
+}
+
+/* Quick taps step through photos: no selection, no double-tap zoom, no
+   dragging the image away */
+.dialog__image {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.dialog__image:focus {
+  outline: none;
+}
+
+/* As wide as the figure (so the image's width), however long: a caption
+   never widens the figure past its image */
+.dialog__caption {
+  justify-self: stretch;
+  contain: inline-size;
+  font-size: var(--text-caption);
+  font-style: italic;
+}
+
+@media (max-width: 767px) {
+  .dialog {
+    padding: var(--space-64) var(--page-margin);
+  }
+
+  .dialog__image {
+    max-height: calc(100dvh - 2 * var(--space-64) - 2 * var(--gap-related));
+  }
+}
+
+/* Phones: plain "Close", "← Prev", "Next →", as on desktop and in the menu
+   (Tomas, 6 Oct: no brackets or capitals); no underline after a tap */
+@media (max-width: 767px) {
+  :is(.dialog__close, .dialog__prev, .dialog__next) {
+    white-space: nowrap;
+  }
+
+  :is(.dialog__close, .dialog__prev, .dialog__next):is(:hover, :focus-visible) {
+    text-decoration: none;
+  }
+}
+

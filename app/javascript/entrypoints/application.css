@@ -1,0 +1,4 @@
+/* Its own entrypoint, loaded with a <link> in the head, so the page never
+   paints unstyled. Imported from application.ts instead, Vite's dev server
+   injects it with JavaScript, after a flash of the bare HTML. */
+@import "../../assets/stylesheets/application.css";

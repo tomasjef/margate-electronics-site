@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# Publishes the code on main to the public repo tomasjef/margate-electronics-site
+# as one new commit. This repo stays private: its content database holds the
+# admin user and sessions, so the snapshot's copy has them deleted (and the
+# file vacuumed, so nothing is left in free pages). Personal Gmail addresses
+# in the docs are blanked. Run from the repo root on main.
+set -euo pipefail
+
+PUBLIC_REPO="tomasjef/margate-electronics-site"
+# Override to try it against a local bare repo first
+PUBLIC_URL="${PUBLIC_URL:-git@github.com:$PUBLIC_REPO.git}"
+
+[ "$(git branch --show-current)" = "main" ] || { echo "Run on main." >&2; exit 1; }
+sha=$(git rev-parse --short HEAD)
+work=$(mktemp -d)
+trap 'rm -rf "$work"' EXIT
+
+git clone -q "$PUBLIC_URL" "$work/public" 2>/dev/null
+find "$work/public" -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+git archive HEAD | tar -x -C "$work/public"
+
+db="$work/public/storage/content.sqlite3"
+sqlite3 "$db" "DELETE FROM sessions; DELETE FROM users; VACUUM;"
+if [ "$(sqlite3 "$db" 'SELECT (SELECT count(*) FROM users) + (SELECT count(*) FROM sessions)')" != "0" ] ||
+   grep -qa '\$2[aby]\$' "$db"; then
+  echo "The database still holds user data; nothing published." >&2
+  exit 1
+fi
+
+grep -rlE '[A-Za-z0-9._%+-]+@gmail\.com' "$work/public" --exclude-dir=.git |
+  xargs -r sed -i '' -E 's/[A-Za-z0-9._%+-]+@gmail\.com/[address removed]/g'
+
+readme="$work/public/README.md"
+{
+  printf '> Public snapshot of the private working repository, taken from commit `%s`.\n' "$sha"
+  printf '> The content database ships without its admin user and sessions.\n\n'
+  cat "$readme"
+} > "$readme.new" && mv "$readme.new" "$readme"
+
+cd "$work/public"
+git add -A
+if git diff --cached --quiet; then
+  echo "Nothing changed since the last snapshot."
+  exit 0
+fi
+git commit -q -m "Snapshot of margate-electronics-app@$sha"
+git push -q origin HEAD:main
+echo "Published $sha to $PUBLIC_URL"

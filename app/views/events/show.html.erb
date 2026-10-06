@@ -1,0 +1,38 @@
+<% event = @event %>
+<% content_for :title, heading_text(event.heading) || event.title %>
+<% social_meta title: heading_text(event.heading) || event.title, description: summary_of(event.description.presence || event_text(event)), image: event.main_image %>
+<% content_for :section, "events" %>
+<% content_for :header_lead, breadcrumb("Events", filter_path("events")) %>
+<% content_for :header_status, event.status_text %>
+
+<article class="detail detail--event">
+  <%= render "shared/page_heading", heading: event.heading.presence %>
+  <div class="detail__body">
+    <% if (poster = event.main_picture) %>
+      <%= render "shared/main_media", media: poster, thumbs: event.thumb_pictures %>
+    <% end %>
+    <%# Before the night: Book Tickets (Sold Out in its place once gone), then
+        Add to Calendar (a calendar file, EventCalendar). The ticket prices
+        are in the details, under the time (Tomas, 3 Oct). %>
+    <% if event.upcoming? %>
+      <div class="price-row">
+        <% if event.sold_out? %>
+          <%= render "shared/sold_out" %>
+        <% elsif event.book_tickets? %>
+          <%= external_link_to "Book Tickets", event.external_ticket_url, class: "button" %>
+        <% end %>
+        <%= link_to "Add to Calendar", event_calendar_path(event, format: :ics, trailing_slash: false), class: "button", data: { turbo: false } %>
+      </div>
+    <% end %>
+    <div class="prose trim detail__info"><%= event_text(event) %></div>
+
+    <%# The recordings before the scattered photos: they're what people come
+        back for, and keep playing while the photos are browsed. Only those
+        with a file, so there's never a [ PLAY ] that does nothing. %>
+    <% if (recordings = event.tracks.select(&:url)).any? %>
+      <%= render "shared/tracks", label: "Recordings", tracks: recordings %>
+    <% end %>
+
+    <%= render "shared/scatter", photos: event.scatter_pictures, seed: event.scatter_seed %>
+  </div>
+</article>

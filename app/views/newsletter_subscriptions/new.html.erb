@@ -1,0 +1,19 @@
+<% content_for :title, "Newsletter" %>
+<% page = NewsletterPage.current %>
+<% top_line page.top_line, fallback: "Newsletter" %>
+<%# The sign-up page: every Newsletter link opens it, and its address
+    (/newsletter/) is the one to share. Centred in the page, as the pop-up
+    was. The top line names it ("Newsletter", or what's typed in the admin's
+    Newsletter page); an optional title above the field, in the body size.
+    Without one, phones show "Newsletter" there instead of the top line, as
+    it was (Tomas, 6 Oct). %>
+<article class="detail detail--newsletter">
+  <div class="detail__body">
+    <% if page.heading.present? %>
+      <h1 class="newsletter__title trim"><%= lines(page.heading) %></h1>
+    <% else %>
+      <h1 class="newsletter__title newsletter__title--name trim">Newsletter</h1>
+    <% end %>
+    <%= render "form" %>
+  </div>
+</article>

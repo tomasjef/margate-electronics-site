@@ -1,0 +1,15 @@
+<%# The sign-up form, on the /newsletter/ page. Posts straight to MailerLite (config.x.newsletter_form_action);
+    the newsletter controller sends it in the background and shows the result in place. %>
+<div id="newsletter" class="newsletter" data-controller="newsletter">
+  <form action="<%= Rails.configuration.x.newsletter_form_action %>" method="post" class="newsletter__form"
+        data-newsletter-target="form" data-action="newsletter#submit" data-turbo="false">
+    <label for="newsletter-email" class="visually-hidden">E-mail address</label>
+    <input type="email" name="fields[email]" id="newsletter-email" class="newsletter__input"
+           placeholder="E-mail address" autocomplete="email" required
+           aria-describedby="newsletter-message" data-newsletter-target="email">
+    <input type="hidden" name="ml-submit" value="1">
+    <input type="hidden" name="anticsrf" value="true">
+    <input type="submit" value="Subscribe" class="button newsletter__submit" data-newsletter-target="submit">
+  </form>
+  <p id="newsletter-message" class="newsletter__message trim" data-newsletter-target="message" aria-live="polite" hidden></p>
+</div>

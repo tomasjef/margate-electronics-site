@@ -1,0 +1,109 @@
+/*
+  Design tokens. Source of truth: Figma file "ME-new".
+  Values match Figma exactly (decision 25 Sep, design sign-off). Marked
+  (figma) where they come from a Figma variable or text style; the rest are
+  measured from the frames. Components must use these, never raw values.
+*/
+
+:root {
+  color-scheme: only light; /* the same grey and blue in dark mode too (see the layout's meta) */
+  /* Colour */
+  --color-bg: #cccccc;
+  --color-bar-bg: #b0b0b0;        /* the now-playing strip: darker grey; blue text about 4:1 (Tomas's choice, below 4.5:1) */
+  --color-ink: #0000ff;
+  --color-text-white: #ffffff;    /* optional text colour, e.g. release credits */
+  --color-alert: #ff0000;         /* stock notes: pure red, the counterpart of the pure blue ink */
+  --color-sold-out: #cc0000;      /* Sold Out chips: a deeper red, 4.63:1 on its tint (pure red can't reach 4.5:1) */
+  --color-sold-out-bg: #ffdcdc;   /* Sold Out chips: a pale tint of that red */
+  --color-tag-event: #ffe500;
+  --color-tag-release: #7cff4f;   /* (figma) tag/releases */
+  --color-tag-print: #3de8ff;     /* (figma) tag/prints */
+  --color-tag-apparel: #ffa3e6;   /* (figma) tag/apparel */
+  --color-tag-audio: #ffb347;     /* (figma) tag/audio */
+  --color-tag-action: #ffffff;    /* (figma) tag/white: Book Tickets, Buy, Pre-order, Archived */
+  --color-track: rgb(0 0 255 / 0.1); /* audio player bar */
+  --color-action-hover-bg: var(--color-ink);   /* buy/book links on hover */
+  --color-action-hover-text: #ffffff;
+  --color-placeholder-text: rgb(0 0 255 / 0.5);
+
+  /* Spacing: Figma measurements. 20 is the page edge, 40 the column gap. */
+  --space-3: 3px;
+  --space-4: 4px;
+  --space-6: 6px;
+  --space-8: 8px;
+  --space-9: 9px;
+  --space-10: 10px;
+  --space-11: 11px;
+  --space-12: 12px;
+  --space-14: 14px;
+  --space-15: 15px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-30: 30px;
+  --space-32: 32px;
+  --space-38: 38px;
+  --space-40: 40px;
+  --space-48: 48px;
+  --space-50: 50px;
+  --space-64: 64px;
+  --space-80: 80px;
+  --space-96: 96px;
+  --space-100: 100px;
+
+  /* Type (figma text styles) */
+  --font-mono: "IBM Plex Mono", "Noto Sans JP", ui-monospace, monospace;
+  --text-body: 14px;              /* Body/Normal */
+  --text-small: 12px;             /* Body/Smaller, Body/Credits (italic) */
+  --text-caption: 11px;           /* photo captions (italic), a touch below Small */
+  --text-tiny: 10px;              /* audio player time */
+  --text-title: 24px;             /* Heading/H1 */
+  --weight-regular: 400;
+  --weight-title: 500;            /* Heading/H1 is Plex Mono Medium */
+  --line-normal: 1.3;             /* Figma line height "auto": Plex's own 1.3 */
+
+  /* Components */
+  /* Chips and buttons share one size: 30 tall (10 + cap height + 10).
+     Were 34 (12/9), and 22 (6/3) in Figma. */
+  --tag-pad-block: var(--button-pad-block);
+  --tag-pad-inline: var(--button-pad-inline);
+  --button-pad-block: var(--space-10);
+  --button-pad-inline: var(--space-8);
+  --thumb-width: 80px;
+  --logo-size: 50px;
+  --logo-turn-distance: 1440;     /* px of scroll per full turn of the logo */
+  --stroke: 1px;                  /* newsletter field underline */
+  --image-stroke: 3px;            /* category-colour stroke inside images on hover */
+
+  /* Spacing system (design round 2): the only gaps between elements */
+  --gap-group: var(--space-10);   /* within a group: tag to content, image to caption, thumbnails, players, buttons */
+  --gap-related: var(--space-20); /* related things: image to thumbnails, image to info, info to buttons, buttons to text */
+  --gap-section: var(--space-40); /* sections: heading to image, text to photos, photos to recordings, between tiles */
+  --tap-pad-block: 17px;          /* 17 + ~10px cap height + 17 = a 44px tap target */
+  --tap-pad-inline: var(--space-10);
+  --gap-filter: var(--space-8);   /* between filter tabs (was 4) */
+  --dialog-padding: var(--space-80);
+  --input-text-mobile: 16px;      /* below 16px iOS Safari zooms in on focus */
+
+  /* Layout, from the 1440 frames */
+  --page-margin: var(--space-20);
+  --column-gap: var(--space-40);
+  --grid-column: 80px;            /* Figma 12-column grid: 80 columns, 40 gutters, 20 margins at 1440 */
+  --column: 440px;                /* 4 grid columns */
+  --column-text: calc(var(--column) + var(--grid-column) + var(--column-gap));  /* 5 grid columns (560 at 1440): text-only pages, about 66 characters a line */
+  --column-wide: calc(var(--column) + 2 * (var(--grid-column) + var(--column-gap)));  /* 6 grid columns (680 at 1440) */
+  --gallery-column: 200px;
+  --container: calc(2 * var(--column) + var(--column-gap));
+  --page-space: var(--space-80);  /* same space above and below the content (wide screens) */
+}
+
+/* Phones: page margin 15 (20 on wider screens) and body text at 16px,
+   matching the form fields. */
+@media (max-width: 767px) {
+  :root {
+    --page-margin: var(--space-15);
+    --text-body: var(--input-text-mobile);  /* 16px on phones, the same as form fields (14 on wider screens) */
+    --text-caption: var(--text-small);      /* 12px on phones: smaller strains in italic */
+  }
+}
+

@@ -1,0 +1,241 @@
+/* Event, release and product pages: one centred 440 column.
+   Spacing uses only the three gap tokens: group 10, related 20, section 40. */
+.detail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.detail__body {
+  width: 100%;
+  max-width: var(--column);
+}
+
+/* Optional page heading: one large centred heading */
+.page-heading {
+  margin-bottom: var(--gap-section);
+  font-size: var(--text-title);
+  font-weight: var(--weight-title);
+  text-align: center;
+}
+
+/* Thumbnails: the same width, each as tall as its photo's shape, lined up
+   along the top. As many columns as fit with at least the group gap
+   between them, the spare room shared out between the columns, so a full
+   row meets both edges of the main photo (on phones; at 440 five fit
+   exactly) */
+.thumbs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, var(--thumb-width));
+  justify-content: space-between;
+  align-items: start;
+  gap: var(--gap-group);
+  margin-top: var(--gap-group);   /* same as between thumbnails */
+  padding: 0;
+  list-style: none;
+}
+
+.thumbs .media {
+  width: var(--thumb-width);
+  height: auto;
+}
+
+.thumb-button { width: auto; }
+
+.main-media + .prose,
+.detail__info {
+  margin-top: var(--gap-related);
+}
+
+/* Size and colour chips, above the price and Buy */
+.option-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-group) var(--gap-related);
+  margin-top: var(--gap-related);
+}
+
+/* Stock notes: small italic text in red, a block of their own a related
+   gap (20) from what's above, under a product's options or a release's
+   price and button, the same as every gap around the buying (Tomas, 1 Oct) */
+.stock-notes {
+  display: grid;
+  gap: var(--gap-group);
+  margin-top: var(--gap-related);
+}
+
+.stock-notes:not(:has(.stock-note:not([hidden]))) {
+  display: none;
+}
+
+.stock-note {
+  color: var(--color-alert);
+  font-size: var(--text-small);
+  font-style: italic;
+}
+
+/* The stockists line under a release's price: the same size, in the ink,
+   not a warning */
+.stockist-line {
+  color: var(--color-ink);
+  font-style: normal;
+}
+
+.stockist-line a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.stockist-line a:is(:hover, :focus-visible) {
+  color: var(--color-text-white);
+}
+
+/* Price, then size and colour groups, then Buy: a related gap between them,
+   a group gap between wrapped lines (no indent when they wrap on phones) */
+.price-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gap-group) var(--gap-related);
+  margin-top: var(--gap-related);
+}
+
+/* Recordings and Previews too: 40 above their chip at every width, on
+   events as on releases (Tomas, 3 Oct) */
+.detail__section {
+  margin-top: var(--gap-section);
+}
+
+.detail__section > .tag + * {
+  margin-top: var(--gap-group);
+}
+
+/* Running text: a blank line between paragraphs, including after the metadata */
+.prose p + p {
+  margin-top: calc(var(--text-body) * var(--line-normal));
+}
+
+/* Links in body text: underlined; white on hover and keyboard focus, still
+   underlined (Tomas, 29 Sep) */
+.prose a,
+.detail__info a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.prose a:is(:hover, :focus-visible),
+.detail__info a:is(:hover, :focus-visible) {
+  color: var(--color-text-white);
+}
+
+/* About: artists in two columns */
+.artist-list {
+  columns: 2;
+  column-gap: var(--column-gap);
+  margin-top: var(--gap-related);
+  padding: 0;
+  list-style: none;
+}
+
+/* About is text only, no photo to match: the text column (5 grid columns,
+   560 at 1440, about 66 characters a line); artists stay in two columns */
+@media (min-width: 768px) {
+  .detail--about .detail__body {
+    max-width: var(--column-text);
+  }
+}
+
+/* Stockists: centred in the window between header and footer, like the
+   newsletter page; one column, read like the About text: the city, its
+   shops one a line under it, a blank line between cities */
+.page:has(.detail--stockists) {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Phones: from the top, where About's text starts (Tomas, 6 Oct) */
+@media (max-width: 767px) {
+  .page:has(.detail--stockists) {
+    justify-content: flex-start;
+  }
+}
+
+.stockists {
+  margin: 0;
+}
+
+/* A shop name that wraps continues indented, as on About's artist list */
+.stockists dd {
+  margin: 0;
+  padding-left: 2ch;
+  text-indent: -2ch;
+}
+
+.stockists__intro + .stockists,
+.stockists + .stockists__outro,
+.stockists__city + .stockists__city {
+  margin-top: calc(var(--text-body) * var(--line-normal)); /* a blank line, as between paragraphs */
+}
+
+/* Links as in body text: underlined, white on hover and keyboard focus */
+.stockists a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.stockists a:is(:hover, :focus-visible) {
+  color: var(--color-text-white);
+}
+
+/* A name that wraps continues indented, so it never reads as two names */
+.artist-list li {
+  break-inside: avoid;
+  padding-left: 2ch;
+  text-indent: -2ch;
+}
+
+/* Artist photos: two masonry columns of 200 */
+.gallery {
+  display: flex;
+  gap: var(--column-gap);
+  align-items: flex-start;
+}
+
+.gallery__column {
+  display: flex;
+  flex: 0 1 var(--gallery-column);
+  flex-direction: column;
+  gap: var(--gap-section);
+  min-width: 0;
+}
+
+.gallery figcaption {
+  white-space: pre-line; /* the credit on its own line (Image#caption_lines) */
+  margin-top: var(--gap-group);
+  font-size: var(--text-caption);
+  font-style: italic;
+}
+
+/* Wide screens: the two columns widen to the 8-column home width (a half
+   each) and every photo moves to its grid position (see Scatter). The left
+   column counts from the left edge, the right from the centre; either can
+   reach the middle, across the centre (the right column at -1). */
+@media (min-width: 1240px) {
+  .gallery {
+    width: var(--container);
+    margin-inline: calc((var(--column) - var(--container)) / 2);
+  }
+
+  .gallery__column {
+    flex: 0 0 var(--column);
+  }
+
+  .gallery figure {
+    width: var(--gallery-column);
+    margin-inline-start: calc(var(--shift, 0) * (var(--grid-column) + var(--column-gap)));
+    margin-block-start: calc(var(--drop, 0) * var(--gap-section));
+  }
+}
+

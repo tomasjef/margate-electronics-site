@@ -1,0 +1,49 @@
+#!/usr/bin/env sh
+# Builds the static site into build/: assets, every page (Parklife), then the
+# files in public/. Fails if any page points back at Rails or at this Mac.
+# Runs locally and in the deploy workflow; needs only the Cloudinary cloud name.
+set -eu
+cd "$(dirname "$0")/.."
+
+# Production mode: digested asset URLs, no development-only pages.
+export RAILS_ENV=production
+export RAILS_LOG_LEVEL=warn
+export SECRET_KEY_BASE_DUMMY=1
+
+rm -rf build public/assets public/vite
+# Leave no precompiled assets behind: in development Propshaft would serve
+# those stale copies instead of the live files.
+trap 'rm -rf public/assets public/vite' EXIT
+
+# Propshaft images, and the Vite build (vite_rails hooks into this task).
+bundle exec rails assets:precompile
+
+bundle exec parklife build "$@"
+
+# Icons, robots.txt, the error pages and the Vite build (CSS, JavaScript,
+# fonts). Not the Vite development and test builds, and not public/assets,
+# which also holds the admin's files: the admin is never deployed.
+rsync -a --exclude /assets --exclude /vite-dev --exclude /vite-test public/ build/
+
+# From public/assets, only the files the pages use (images, via Propshaft).
+grep -rhoE "(/vite)?/assets/[A-Za-z0-9._/-]+" build --include='*.html' | grep -v '^/vite/' | sort -u |
+  while read -r path; do
+    mkdir -p "build$(dirname "$path")"
+    cp "public$path" "build$path"
+  done
+
+# The files Cloudflare Pages and search engines look for
+for file in 404.html sitemap.xml robots.txt feed.xml _headers favicon.ico apple-touch-icon.png icon.svg; do
+  if [ ! -s "build/$file" ]; then
+    echo "bin/static-build: build/$file is missing" >&2
+    exit 1
+  fi
+done
+
+# Nothing in the output may need Rails or this machine.
+if grep -rIl -e "/rails/active_storage" -e "localhost" -e "127.0.0.1" build; then
+  echo "bin/static-build: the files above contain /rails/active_storage, localhost or 127.0.0.1" >&2
+  exit 1
+fi
+
+echo "Built $(find build -name '*.html' | wc -l | tr -d ' ') pages, $(find build -type f | wc -l | tr -d ' ') files in build/"

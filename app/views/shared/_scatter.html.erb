@@ -1,0 +1,19 @@
+<%# Scattered photos, optional on any page: two masonry columns; on wide
+    screens each photo also shifts to a seeded random grid position in its
+    half (Scatter). Real photos open in the lightbox. %>
+<% if photos.any? %>
+  <% columns = Masonry.split(photos) { |m| m.height + 10 + 10 + 40 } %>
+  <% places = Scatter.places(columns, seed: seed) %>
+  <div class="gallery detail__section">
+    <% columns.each do |column| %>
+      <div class="gallery__column">
+        <% column.each do |photo| %>
+          <figure style="--shift: <%= places[photo].shift %>; --drop: <%= places[photo].drop %>">
+            <%= media_image(photo, lightbox: true) %>
+            <% if photo.caption %><figcaption class="trim"><%= words(photo.caption) %></figcaption><% end %>
+          </figure>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
