@@ -62,4 +62,4 @@ gem "parklife-rails", "~> 0.3"
 
 # Media on Cloudflare R2 through its S3-compatible API: Active Storage uploads
 # from the admin, and the preview clips and file copies in the audio scripts
-gem "aws-sdk-s3", "~> 1.0", require: false
+gem "aws-sdk-s3", "~> 1.233", require: false
