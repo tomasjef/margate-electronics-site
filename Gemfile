@@ -54,7 +54,7 @@ gem "vite_rails", "~> 3.11"
 gem "turbo-rails", "~> 2.0"
 gem "stimulus-rails", "~> 1.3"
 
-gem "avo", "~> 4.2"
+gem "avo", "~> 4.3"
 
 
 # Static export: crawls the app and writes the site into build/ [https://github.com/benpickles/parklife-rails]
