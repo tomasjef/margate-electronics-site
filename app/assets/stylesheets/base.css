@@ -1,0 +1,108 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-mono);
+  font-size: var(--text-body);
+  line-height: var(--line-normal);
+  -webkit-text-size-adjust: 100%;
+  /* Lines break only at spaces, never inside a word. Japanese has no spaces,
+     so by default browsers break between any two characters ("こけの" / "ね");
+     keep-all keeps each run of kana and kanji together, like a word. */
+  word-break: keep-all;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+figure {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+em,
+i {
+  font-style: italic;
+}
+
+/* The white text style, available on any text (paragraph or phrase).
+   Below the 4.5:1 contrast rule on the grey: an allowed exception. */
+.text-white,
+.text-white a {
+  color: var(--color-text-white);
+}
+
+strong,
+b {
+  font-weight: var(--weight-title);
+}
+
+/* Measure text from cap height to baseline, as Figma does, so spacing
+   between blocks matches the frames. Chrome 133+, Safari 18.2+. */
+.trim {
+  text-box: trim-both cap alphabetic;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* Selected text in the page's category colour: yellow on events, green on
+   releases, and each tile's own on the home page (--category, media.css);
+   yellow anywhere else (Tomas, 3 Oct) */
+::selection {
+  background: var(--category, var(--color-tag-event));
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+/* A word that must not break across lines (see keep_brackets_together) */
+.nowrap {
+  white-space: nowrap;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}

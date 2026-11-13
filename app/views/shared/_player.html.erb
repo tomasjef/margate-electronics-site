@@ -1,0 +1,24 @@
+<%# One track, in the "Ledger" design: [ PLAY ], the title and time, then a
+    progress rule drawn in characters, [|||||.....]: bars where played, dots
+    after. The sound itself plays in the shared transport (shared/_transport),
+    so it keeps going while you browse; this is its remote control and shows
+    its progress. %>
+<div class="track<%= " track--empty" unless track.url %>" data-controller="player"
+     data-player-src-value="<%= track.url %>" data-player-title-value="<%= typography(track.title) %>"
+     data-player-source-value="<%= track.source_label %>" data-player-source-url-value="<%= url_for(only_path: true) %>">
+  <div class="pl-ledger" data-player-target="bar">
+    <div class="pl-ledger__row">
+      <button type="button" class="pl-ledger__play" data-player-target="button"
+              data-action="player#toggle keydown.left->player#back keydown.right->player#forward"
+              aria-label="Play <%= track.title %>" <%= "disabled" unless track.url %>>
+        <span class="pl-ledger__word pl-ledger__word--play">[&nbsp;PLAY&nbsp;]</span><span class="pl-ledger__word pl-ledger__word--pause">[&nbsp;STOP&nbsp;]</span>
+      </button>
+      <%# The title and, when it's too long for the line, a moving copy after it (player controller) %>
+      <span class="pl-ledger__title" data-player-target="title"><span class="pl-ledger__line"><span><%= words(track.title) %></span></span></span>
+      <%# At rest just the length, so the title has room; "0:12 / 0:45" once it plays %>
+      <span class="pl-ledger__time" data-player-target="time"><%= track.shown_duration %></span>
+    </div>
+    <span class="pl-ledger__rule"<% if track.url %> data-action="click->player#seek"<% end %> aria-hidden="true"
+          data-player-target="ascii">[..........]</span>
+  </div>
+</div>

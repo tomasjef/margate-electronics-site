@@ -1,0 +1,14 @@
+<%# One Feed::Item %>
+<article class="tile tile--<%= tile.kind %>" style="--feed-order: <%= order %>">
+  <div class="tile__head">
+    <%= link_to tile.tag, filter_path(ApplicationHelper::FILTER_FOR[tile.kind]), class: tag_class(tile.tag) %>
+    <%# A descriptive label (On Sale, Pre-order, Sold Out, Archived 2023), not a link: the tile opens the page. %>
+    <% if tile.label %>
+      <span class="<%= tag_class(tile.label) %>"><%= tile.label %></span>
+    <% end %>
+  </div>
+  <%= link_to tile.path, class: "tile__link" do %>
+    <% if tile.picture %><div class="tile__media"><%= media_image(tile.picture) %></div><% end %>
+    <% if tile.caption.present? %><p class="tile__caption trim"><%= lines(tile.caption) %></p><% end %>
+  <% end %>
+</article>

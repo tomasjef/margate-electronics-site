@@ -1,0 +1,7 @@
+<%# Optional per page: pass heading: nil to start the page at the image. The
+    page still gets a main heading for screen readers, from its title. %>
+<% if heading %>
+  <h1 class="page-heading trim"><%= lines(heading) %></h1>
+<% else %>
+  <h1 class="visually-hidden"><%= content_for?(:title) ? yield(:title) : "Margate Electronics" %></h1>
+<% end %>

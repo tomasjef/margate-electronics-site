@@ -1,0 +1,128 @@
+/* The admin (Avo), local only. Loaded after Avo's own styles; the file of
+   the same name in the Avo gem is empty. */
+
+/* The text editor's underline button is the site's White text style: the
+   site shows <u> as white (ApplicationHelper#copy). Relabelled here, and
+   marked text shows white in the editor too. */
+.tiptap__button--underline svg {
+  display: none;
+}
+
+.tiptap__button--underline::after {
+  content: "White";
+  padding-inline: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.tiptap.ProseMirror u {
+  background: #8a8a8a;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+/* An image record is its photo: its file can't be removed on its own (the
+   save is refused), so no delete button on the file. Delete the image
+   instead, or choose a new file to replace it. */
+a[href*="/resources/images/"][href*="/active_storage_attachments/"] {
+  display: none;
+}
+
+/* On an edit form the current photo shows small, so the upload box for a
+   new one stays in view */
+form .field-wrapper__input img.object-cover {
+  max-height: 12rem;
+  width: auto;
+}
+
+/* A file chosen and waiting for Save (avo-overrides.js) */
+.file-upload-input--chosen {
+  border-style: solid;
+  border-color: #3fb950;
+}
+
+.file-upload-input--chosen .file-upload-input__title {
+  color: #3fb950;
+  font-weight: 600;
+}
+
+/* Lists never scroll sideways: long text in a table cell wraps (the
+   resources also shorten it, format_index_using) */
+.table-view td,
+table td {
+  overflow-wrap: anywhere;
+}
+
+/* Short text fields use the editor too (links, italic, White), but slim:
+   the lineup fields (Live, DJ, Screening, Workshop) are one line; headings
+   and info a few lines, growing as they're typed in. Only Description and
+   Credits keep the tall editor. */
+tiptap-editor:is([id$="_live_editor"], [id$="_dj_editor"], [id$="_screening_editor"], [id$="_workshop_editor"]) .tiptap.ProseMirror {
+  min-height: 0 !important;
+  height: auto !important;
+  padding-block: 0.625rem;
+}
+
+tiptap-editor:is([id$="_heading_editor"], [id$="_info_editor"]) .tiptap.ProseMirror {
+  min-height: 4.5rem !important;
+  height: auto !important;
+}
+
+/* Every editor shows just Italic, White and Link: the site shows nothing
+   else (copy leaves out bold, strikethrough and lists) */
+:is(.tiptap__button--bold, .tiptap__button--strike, .tiptap__button-group:has(.tiptap__button--ul)) {
+  display: none;
+}
+
+/* The event lineup's "+ DJ"-style buttons (avo-overrides.js) */
+.lineup-add {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  opacity: 0.85;
+}
+
+.lineup-add__button {
+  padding: 0.25rem 0.75rem;
+  border: 1px solid currentColor;
+  border-radius: 0.5rem;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.lineup-add__button:hover {
+  opacity: 0.7;
+}
+
+.lineup-add[hidden],
+.lineup-add__button[hidden] {
+  display: none;
+}
+
+/* The × beside a lineup line's name, to remove the line */
+.lineup-remove {
+  margin-left: 0.5rem;
+  padding: 0 0.4rem;
+  border: 1px solid currentColor;
+  border-radius: 0.375rem;
+  background: none;
+  color: inherit;
+  font: inherit;
+  line-height: 1.4;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.lineup-remove:hover {
+  opacity: 1;
+}
+
+/* The ME logo in white: the admin's top band is dark in light and dark mode */
+.admin-logo {
+  filter: brightness(0) invert(1);
+}

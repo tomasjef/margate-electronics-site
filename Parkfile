@@ -1,0 +1,31 @@
+# The static export, run by bin/static-build. Loads the app (in production
+# mode) and crawls it from the home page, writing each page into build/.
+# Every page must be reachable by a link from there, or be listed below.
+require_relative "config/environment"
+
+Parklife.application.configure do |config|
+  # The site's address, for absolute links (Open Graph tags and the like).
+  # Staging until the launch cutover.
+  config.base = ENV.fetch("SITE_URL", "https://staging.margate-electronics.org")
+
+  # A broken internal link fails the build (Parklife's default, stated here
+  # because the build relies on it). A redirect always does.
+  config.on_404 = :error
+end
+
+Parklife.application.routes do
+  root crawl: true
+
+  # Also linked from the menu; listed so it's built even if a link changes.
+  get newsletter_path, crawl: true
+  get stockists_path, crawl: true
+  get archive_path, crawl: true
+
+  # Not linked from any page: Cloudflare Pages serves 404.html for missing
+  # addresses; sitemap.xml and robots.txt are for search engines, feed.xml
+  # for feed readers (found through the link in every page's head)
+  get "/404.html"
+  get "/sitemap.xml"
+  get "/robots.txt"
+  get "/feed.xml"
+end

@@ -1,0 +1,118 @@
+/* The page players ("Ledger", shared/_player): [ PLAY ], the title and time,
+   then a rule drawn in characters. The sound plays in the shared transport
+   (shared/_transport); these are its remote controls. */
+
+/* The chip sits close to its players, as a group */
+.tracks__label + .tracks {
+  margin-top: var(--gap-group);
+}
+
+/* Tracks as far apart as the heading is from the first track (20 of painted
+   space). Between tracks the rule's bracket tail and the space above
+   [ PLAY ] add about 0.33em, measured, so that is taken off. */
+.tracks {
+  display: grid;
+  /* As wide as the column, never widened by a long title (it's on one line) */
+  grid-template-columns: minmax(0, 1fr);
+  gap: calc(var(--gap-related) - 0.33em);
+  padding: 0;
+  list-style: none;
+}
+
+/* [ PLAY ], the title and the time always on one line: a title too long
+   for it ends in …, and moves across while its track plays */
+.pl-ledger__row {
+  display: flex;
+  align-items: baseline;
+  gap: 1ch;
+}
+
+.pl-ledger__play {
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-ink);
+  font: inherit;
+  cursor: pointer;
+}
+
+/* Phones: a taller tap area for [ PLAY ] (the words alone are about 20px),
+   reaching into the space around it; the negative margin keeps everything
+   where it is */
+@media (max-width: 767px) {
+  .pl-ledger__play {
+    margin-block: calc(-1 * var(--space-10));
+    padding-block: var(--space-10);
+  }
+}
+
+.track--empty .pl-ledger__play:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+/* Controls turn white on hover (a real pointer) and keyboard focus, like
+   linked text (Tomas, 3 Oct) */
+.pl-ledger__play:focus-visible {
+  color: var(--color-text-white);
+}
+
+@media (hover: hover) {
+  .pl-ledger__play:not(:disabled):hover {
+    color: var(--color-text-white);
+  }
+}
+
+/* No underline on [ PLAY ] / [ STOP ]: on phones a tap leaves the button in
+   its hover state, the same reason Menu / Close have none */
+.pl-ledger__word--pause { display: none; }
+.is-playing .pl-ledger__word--play { display: none; }
+.is-playing .pl-ledger__word--pause { display: inline; }
+
+.pl-ledger__title {
+  flex: 1 1 auto;
+  min-width: 0;
+  /* Clip only sideways (for the …): letters like h, l and f rise above the
+     trimmed box */
+  overflow-x: clip;
+  overflow-y: visible;
+  font-style: italic;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The moving title: the line and a copy of it after a gap, so it comes
+   round without a jump; cut off at the edge rather than ending in … */
+.pl-ledger__title.is-scrolling {
+  text-overflow: clip;
+}
+
+.pl-ledger__title.is-scrolling .pl-ledger__line {
+  display: inline-block;
+}
+
+.pl-ledger__copy {
+  margin-left: 4ch;
+}
+
+.pl-ledger__time {
+  flex: none;
+  margin-left: auto;
+  font-style: italic;
+  font-variant-numeric: tabular-nums;
+  text-box: trim-both cap alphabetic;
+}
+
+/* The rule reaches 0.18em past the right edge: "]" has 3.1px of empty space
+   on its right in Plex Mono, the italic digits of the time about 0.5px, so
+   this lines up the ink of the "]" with the ink of the time above it. */
+.pl-ledger__rule {
+  display: block;
+  overflow: hidden;
+  margin-top: var(--space-4);
+  margin-right: -0.18em;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}

@@ -1,0 +1,57 @@
+/* Images: full colour. Hover shows a 2px stroke inside, in the category colour.
+   The category colour also tints selected text (base.css). */
+.tile--event, .detail--event { --category: var(--color-tag-event); }
+.tile--release, .detail--release { --category: var(--color-tag-release); }
+.tile--apparel, .detail--apparel { --category: var(--color-tag-apparel); }
+.tile--print, .detail--prints { --category: var(--color-tag-print); }
+
+.media {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  outline: var(--image-stroke) solid transparent;
+  outline-offset: calc(-1 * var(--image-stroke));
+}
+
+:is(a, .media-button, .thumb-button):is(:hover, :focus-visible) .media,
+.thumb-button[aria-pressed="true"] .media {
+  outline-color: var(--category, var(--color-ink));
+}
+
+.media-button,
+.thumb-button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+}
+
+.thumb-button { cursor: pointer; }
+
+.media-button:focus-visible,
+.thumb-button:focus-visible {
+  outline: none;
+}
+
+/* While a photo loads: its dithered stand-in, blown up into square blocks
+   (Dither; lib/dither marks it is-loading, only when it hasn't loaded yet) */
+.media--dithered.is-loading {
+  background: var(--dither) center / cover no-repeat;
+  image-rendering: pixelated;
+}
+
+/* Stand-in for a photo whose file is missing */
+.media--placeholder {
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+  background: var(--color-track);
+  outline: 1px dashed var(--color-ink);
+  outline-offset: -1px;
+  font-size: var(--text-tiny);
+  font-style: italic;
+  text-align: center;
+}

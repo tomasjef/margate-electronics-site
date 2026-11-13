@@ -1,0 +1,34 @@
+<%# The menu at every size. "Menu" (top right) drops this block from the
+    top of the window: the name where it always is, then the links in
+    groups (browse, information, contact, elsewhere), Close where Menu was.
+    The page you're on is marked. Esc, Close or a click on the page closes
+    it. The types are the home page's filters, each only when it has
+    entries (as the filters), so phones can browse by type too. %>
+<% here = ->(path) { current_page?(path) ? "page" : nil } %>
+<div class="menu-drop" id="site-menu" hidden data-menu-target="panel">
+  <nav class="menu-drop__panel" aria-label="Menu">
+    <%= link_to "Margate Electronics", root_path, class: "menu-drop__name trim" %>
+    <% counts = filter_counts %>
+    <ul class="menu-drop__links">
+      <% { "events" => "Events", "releases" => "Releases", "apparel" => "Apparel", "prints" => "Prints" }.each do |key, label| %>
+        <% next if counts[key].zero? %>
+        <li class="trim"><%= link_to label, filter_path(key), aria: { current: here.(filter_path(key)) } %></li>
+      <% end %>
+    </ul>
+    <ul class="menu-drop__links">
+      <li class="trim"><%= link_to "Index", archive_path, aria: { current: here.(archive_path) } %></li>
+      <li class="trim"><%= link_to "About", about_path, aria: { current: here.(about_path) } %></li>
+      <li class="trim"><%= link_to "Stockists", stockists_path, aria: { current: here.(stockists_path) } %></li>
+    </ul>
+    <ul class="menu-drop__links">
+      <li class="trim"><%= link_to "Newsletter", newsletter_path, aria: { current: here.(newsletter_path) } %></li>
+      <li class="trim"><%= mail_to Links::EMAIL, "E-mail" %></li>
+    </ul>
+    <ul class="menu-drop__links">
+      <li class="trim"><%= external_link_to Links::BANDCAMP do %><span aria-hidden="true">↑ </span>Bandcamp<% end %></li>
+      <li class="trim"><%= external_link_to Links::INSTAGRAM do %><span aria-hidden="true">↑ </span>Instagram<% end %></li>
+    </ul>
+    <button type="button" class="menu-drop__close trim" data-action="menu#close">Close</button>
+  </nav>
+  <div class="menu-drop__backdrop" data-action="click->menu#close"></div>
+</div>

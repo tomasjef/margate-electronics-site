@@ -1,0 +1,39 @@
+<%# Main image with thumbnails: a thumbnail swaps into the main image, which
+    opens the lightbox. Each photo keeps its own shape, the thumbnails too
+    (the same width, their heights following the photos). %>
+<div class="main-media" data-controller="gallery">
+  <% if media.placeholder? %>
+    <%= media_image(media) %>
+  <% else %>
+    <%= media_image(media, lightbox: true, data: { gallery_target: "main" }) %>
+  <% end %>
+  <% if thumbs.any? %>
+    <ul class="thumbs">
+      <% thumbs.each_with_index do |entry, i| %>
+        <% thumb, main = entry.picture, entry.main %>
+        <li>
+          <% if thumb.placeholder? %>
+            <%= media_image(thumb) %>
+          <% else %>
+            <button type="button" class="thumb-button" aria-label="Show: <%= thumb.alt %>"
+                    aria-pressed="<%= i.zero? %>"
+                    data-gallery-target="thumb"
+                    data-action="gallery#show"
+                    data-gallery-src-param="<%= MediaUrls.image_url(main.blob, width: main.width) %>"
+                    data-gallery-srcset-param="<%= MediaUrls.image_srcset(main.blob, width: main.width) %>"
+                    data-gallery-height-param="<%= main.height %>"
+                    <% full = lightbox_image(main) %>
+                    data-gallery-full-param="<%= full[:src] %>"
+                    data-gallery-full-srcset-param="<%= full[:srcset] %>"
+                    data-gallery-full-width-param="<%= full[:width] %>"
+                    data-gallery-full-height-param="<%= full[:height] %>"
+                    data-gallery-dither-param="<%= main.dither %>"
+                    data-gallery-alt-param="<%= thumb.alt %>">
+              <%= media_image(thumb) %>
+            </button>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+</div>

@@ -1,0 +1,25 @@
+<% about = AboutPage.current %>
+<% content_for :title, "About" %>
+<% social_meta title: "About Margate Electronics" %>
+<%# No section chip (that's for categories): the top line names the page %>
+<% top_line about.top_line, fallback: "About" %>
+
+<article class="detail detail--about">
+  <%= render "shared/page_heading", heading: about.heading.presence %>
+  <div class="detail__body">
+    <div class="prose trim"><%= copy(about.body) %></div>
+    <% if (artists = about.artist_names).any? %>
+    <section class="detail__section" aria-labelledby="artists-title">
+      <h2 id="artists-title" class="trim">Artists we have worked with:</h2>
+      <ul class="artist-list">
+        <% artists.each do |artist| %>
+          <li><%= words(artist) %></li>
+        <% end %>
+      </ul>
+    </section>
+    <% end %>
+    <% if about.credit.present? %>
+      <div class="prose trim detail__section"><%= copy(about.credit) %></div>
+    <% end %>
+  </div>
+</article>

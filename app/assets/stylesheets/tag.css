@@ -1,0 +1,92 @@
+/* Tags: category labels and small action links. Text is always ink blue. */
+.tag {
+  display: inline-block;
+  padding: var(--tag-pad-block) var(--tag-pad-inline);
+  border: 0;
+  background: var(--color-tag-action);
+  color: var(--color-ink);
+  font: inherit;
+  text-box: trim-both cap alphabetic;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.tag--event { background: var(--color-tag-event); }
+.tag--release { background: var(--color-tag-release); }
+.tag--print { background: var(--color-tag-print); }
+.tag--apparel { background: var(--color-tag-apparel); }
+.tag--audio { background: var(--color-tag-audio); }
+
+/* Sold Out (and Tape Sold Out): red on a pale red tint, 4.63:1 (Tomas, 1 Oct) */
+.tag--sold-out {
+  background: var(--color-sold-out-bg);
+  color: var(--color-sold-out);
+}
+
+/* Category links (filters, tile labels): white when selected or hovered */
+a.tag:is(.tag--event, .tag--release, .tag--print, .tag--apparel):is(:hover, :focus-visible),
+a.tag.is-current {
+  background: var(--color-tag-action);
+}
+
+/* Buttons: the larger action (Book Tickets, Pre-order on Bandcamp, Buy) */
+.button {
+  display: inline-block;
+  padding: var(--button-pad-block) var(--button-pad-inline);
+  border: 0;
+  background: var(--color-tag-action);
+  color: var(--color-ink);
+  font: inherit;
+  text-box: trim-both cap alphabetic;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* Actions that buy, book, subscribe or clear a filter: blue with white text */
+:is(a.button, input.button, input.tag, .filter-key__clear):is(:hover, :focus-visible) {
+  background: var(--color-action-hover-bg);
+  color: var(--color-action-hover-text);
+}
+
+/* Size and colour chips (radio buttons): chosen = apparel pink, others plain
+   and white on hover, sold out faded */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-group);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.chip {
+  display: inline-block;
+  padding: var(--button-pad-block) var(--button-pad-inline);
+  color: var(--color-ink);
+  text-box: trim-both cap alphabetic;   /* same height as the buttons */
+  cursor: pointer;
+}
+
+.chip:hover {
+  background: var(--color-tag-action);
+}
+
+.chip:has(input:checked) {
+  background: var(--color-tag-apparel);
+}
+
+.chip:has(input:focus-visible) {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+/* Faded, not struck through: a line through "L" reads as "Ł" */
+.chip--sold-out {
+  color: var(--color-placeholder-text);
+  cursor: not-allowed;
+}
+
+.chip--sold-out:hover {
+  background: none;
+}

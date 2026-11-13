@@ -1,0 +1,16 @@
+<%# Link previews and search. Pages set these with social_meta (SocialMetaHelper). %>
+<meta name="description" content="<%= social_description %>">
+<link rel="canonical" href="<%= canonical_url %>">
+<meta property="og:site_name" content="Margate Electronics">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_GB">
+<meta property="og:title" content="<%= social_title %>">
+<meta property="og:description" content="<%= social_description %>">
+<meta property="og:url" content="<%= canonical_url %>">
+<% if (image = social_image) %>
+  <meta property="og:image" content="<%= MediaUrls.og_image_url(image.file.blob) %>">
+  <meta property="og:image:width" content="<%= MediaUrls::OG_SIZE[0] %>">
+  <meta property="og:image:height" content="<%= MediaUrls::OG_SIZE[1] %>">
+  <meta property="og:image:alt" content="<%= image.alt %>">
+<% end %>
+<meta name="twitter:card" content="<%= social_image ? "summary_large_image" : "summary" %>">

@@ -1,0 +1,17 @@
+<%# One lightbox for every image. It keeps the site name top left, in its
+    page position. %>
+<dialog id="lightbox" class="dialog dialog--lightbox" aria-label="Image"
+        data-action="click->dialog#backdrop keydown.left->dialog#prev keydown.right->dialog#next">
+  <%= link_to "Margate Electronics", root_path, class: "dialog__brand trim" %>
+  <%= render "shared/dialog_close" %>
+  <figure class="dialog__figure" data-dialog-target="figure">
+    <%# Clicking the image steps to the next one (wrapping round) %>
+    <%# Focus lands on the image when the lightbox opens, not on the first link %>
+    <img class="dialog__image" alt="" tabindex="-1" autofocus data-dialog-target="image" data-action="click->dialog#next">
+    <figcaption class="dialog__caption trim" data-dialog-target="caption" hidden></figcaption>
+  </figure>
+  <%# Shown when the page has more than one image; they wrap round. %>
+  <button type="button" class="dialog__prev trim" data-dialog-target="prev" data-action="dialog#prev" hidden>← Prev</button>
+  <button type="button" class="dialog__next trim" data-dialog-target="next" data-action="dialog#next" hidden>Next →</button>
+</dialog>
+

@@ -1,0 +1,10 @@
+<% if @live -%>
+User-agent: *
+Allow: /
+
+Sitemap: https://<%= PagesController::LIVE_HOST %>/sitemap.xml
+<% else -%>
+# Not the live site: kept out of search results
+User-agent: *
+Disallow: /
+<% end -%>

@@ -1,0 +1,5 @@
+<%# "← Back" on inner pages. Goes back the way you came when that was on this
+    site; otherwise to the section on the home page (or the home page). %>
+<% path = Feed::FILTERS.key?(section) ? filter_path(section) : root_path %>
+<%= link_to "← Back", path, class: "back-link trim",
+      data: { controller: "back", action: "back#go" } %>

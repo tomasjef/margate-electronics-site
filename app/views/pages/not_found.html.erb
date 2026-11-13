@@ -1,0 +1,12 @@
+<% content_for :title, "Page not found" %>
+<% content_for :head do %><meta name="robots" content="noindex"><% end %>
+
+<article class="detail">
+  <%= render "shared/page_heading", heading: "Page not found" %>
+  <div class="detail__body">
+    <div class="prose trim">
+      <p>There’s nothing at this address. It may have moved, or the link may be mistyped.</p>
+      <p><%= link_to "Go to the home page", root_path %></p>
+    </div>
+  </div>
+</article>

@@ -1,0 +1,22 @@
+<% content_for :title, @filter.capitalize if @filter %>
+<% content_for :header_lead do %>
+  <p><%= link_to "Margate Electronics", root_path %><span class="lead-rest"> is an experimental electronic music event series &amp; label, based in Margate, UK</span></p>
+<% end %>
+
+<%# The main heading, for screen readers: the page shows the name in the header %>
+<h1 class="visually-hidden"><%= @filter ? "Margate Electronics: #{@filter.capitalize}" : "Margate Electronics" %></h1>
+
+<%= render "shared/filter_key", counts: filter_counts, filter: @filter %>
+
+<div class="feed">
+  <% order = @tiles.each_with_index.to_h %>
+  <div class="feed__columns">
+    <% Masonry.split(@tiles) { |t| 22 + 10 + t.picture&.height.to_i + 10 + Masonry.lines(t.caption.to_s, width: 440) * Masonry::LINE_HEIGHT + 50 }.each do |column| %>
+      <div class="feed__column">
+        <% column.each do |tile| %>
+          <%= render "tile", tile: tile, order: order[tile] %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

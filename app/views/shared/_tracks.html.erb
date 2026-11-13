@@ -1,0 +1,9 @@
+<section class="detail__section detail__section--audio" aria-label="<%= label %>">
+  <%# The section's label as a chip in the audio colour, like the category chips %>
+  <h2 class="tag tag--audio tracks__label"><%= label %></h2>
+  <ul class="tracks">
+    <% tracks.each do |track| %>
+      <li><%= render "shared/player", track: track %></li>
+    <% end %>
+  </ul>
+</section>

@@ -1,0 +1,22 @@
+<% page = StockistsPage.current %>
+<% content_for :title, "Stockists" %>
+<% social_meta title: "Margate Electronics stockists" %>
+<%# No section chip (that's for categories): the top line names the page %>
+<% top_line page.top_line, fallback: "Stockists" %>
+
+<%# The record shops that stock the tapes, from the admin's Stockists:
+    centred in the window, no Back (not a section page) %>
+<article class="detail detail--stockists">
+  <%= render "shared/page_heading", heading: page.heading.presence %>
+  <%# One trimmed block, so the lines above and under the list sit a blank
+      line from it, the same as between cities %>
+  <div class="detail__body trim">
+    <% if page.intro.present? %>
+      <div class="prose stockists__intro"><%= copy(page.intro) %></div>
+    <% end %>
+    <%= render "shared/stockists", stockists: @stockists %>
+    <% if page.outro.present? %>
+      <div class="prose stockists__outro"><%= copy(page.outro) %></div>
+    <% end %>
+  </div>
+</article>

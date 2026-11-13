@@ -1,0 +1,47 @@
+<% release = @release %>
+<% content_for :title, heading_text(release.headline) %>
+<% social_meta title: heading_text(release.headline),
+               description: summary_of(release.description), image: release.main_image %>
+<% content_for :section, "releases" %>
+<% content_for :header_lead, breadcrumb("Releases", filter_path("releases")) %>
+<% content_for :header_status, release.status_text if release.status_text %>
+
+<article class="detail detail--release">
+  <%= render "shared/page_heading", heading: release.headline %>
+  <div class="detail__body">
+    <% if (cover = release.main_picture) %>
+      <%= render "shared/main_media", media: cover, thumbs: release.thumb_pictures %>
+    <% end %>
+    <%# "Artist – Title (ME004)" and the format and edition, from the fields, then any typed lines %>
+    <p class="detail__info trim"><%= lines(release.info_html) %></p>
+    <div class="price-row">
+      <%# Tapes gone (Bandcamp): no tape price, Tape Sold Out, and the digital album %>
+      <% if release.price && !(release.tape_sold_out? && !release.sold_out?) %><span class="price-row__price trim"><%= release.price %></span><% end %>
+      <% if release.sold_out? %>
+        <%= render "shared/sold_out" %>
+      <% elsif release.tape_sold_out? %>
+        <span class="tag tag--sold-out"><%= Feed::TAPE_SOLD_OUT %></span>
+        <% if release.external_buy_url.present? %>
+          <%= external_link_to release.button_label, release.external_buy_url, class: "button" %>
+        <% end %>
+      <% elsif release.external_buy_url.present? %>
+        <%= external_link_to release.button_label, release.external_buy_url, class: "button" %>
+      <% end %>
+    </div>
+    <div class="stock-notes">
+      <% if (note = release.tape_note) %><p class="stock-note trim"><%= note %></p><% end %>
+      <%= render "shared/stockist_line", release: release %>
+    </div>
+    <%# The previews before the scattered photos, as on event pages. Only
+        tracks whose 45-second preview is made; releases never stream in full. %>
+    <% if (previews = release.tracks.select(&:url)).any? %>
+      <%= render "shared/tracks", label: "Previews", tracks: previews %>
+    <% end %>
+    <%= render "shared/scatter", photos: release.scatter_pictures, seed: release.scatter_seed %>
+    <%# Credits continue the same text block, so paragraph spacing matches;
+        each credits paragraph is in the credits style. They end with
+        "© <year> Margate Electronics", added from the release date. %>
+    <% credits = release.credits_html.gsub("<p>", %(<p class="credits">)) %>
+    <div class="prose trim detail__section"><%= copy(release.description.to_s + credits) %></div>
+  </div>
+</article>

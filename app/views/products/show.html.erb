@@ -1,0 +1,64 @@
+<% product = @product %>
+<%# Sold out: one Sold Out chip in place of the sizes, colours, stock notes
+    and Buy %>
+<% sold_out = product.sold_out? %>
+<% inventory = product.inventory unless sold_out %>
+<% size, colour = inventory ? inventory.default_choice : [ nil, product.colour_names.first ] %>
+<% section = product.section.downcase %>
+<%# With colours, each has its own photos (falling back to the product's
+    first photo), text and Bandcamp listing; choosing a colour switches them. %>
+<% colours = product.colour_names.presence || [ nil ] %>
+<% content_for :title, heading_text(product.heading) || product.title %>
+<% social_meta title: heading_text(product.heading) || product.title,
+               description: summary_of(lines(product.info_for(colour)).gsub(ApplicationHelper::LINE_BREAK, " · ")), image: product.main_image %>
+<% content_for :section, section %>
+<% content_for :header_lead, breadcrumb(product.section, filter_path(section)) %>
+<% top_line product.top_line %>
+
+<article class="detail detail--<%= section %>">
+  <%= render "shared/page_heading", heading: product.heading.presence %>
+  <div class="detail__body"<% if inventory %> data-controller="variant"
+       data-variant-stock-value="<%= inventory.to_h.to_json %>" data-variant-low-value="<%= Inventory::LOW_STOCK %>"<% end %>>
+    <% colours.each do |gallery_colour| %>
+      <% main = product.main_picture(gallery_colour) || product.main_picture %>
+      <% next unless main %>
+      <div data-variant-target="byColour" data-colour="<%= gallery_colour %>"<%= " hidden" if gallery_colour && gallery_colour != colour %>>
+        <%= render "shared/main_media", media: main, thumbs: product.thumb_pictures(gallery_colour) %>
+      </div>
+    <% end %>
+
+    <% colours.each do |info_colour| %>
+      <% info = info_colour ? product.info_for(info_colour) : product.info %>
+      <% next if info.blank? %>
+      <p class="detail__info trim" data-variant-target="byColour" data-colour="<%= info_colour %>"<%= " hidden" if info_colour && info_colour != colour %>><%= lines(info) %></p>
+    <% end %>
+
+    <% if inventory %>
+      <%# Choose size and colour first; stock notes follow the choice %>
+      <div class="option-row">
+        <%= render "option_chips", label: "Size", options: inventory.sizes, chosen: size,
+              unavailable: inventory.sold_out_sizes(colour) %>
+        <%= render "option_chips", label: "Colour", options: inventory.colours, chosen: colour,
+              unavailable: inventory.colours.reject { |c| inventory.colour_available?(c) } %>
+      </div>
+      <div class="stock-notes" aria-live="polite">
+        <p class="stock-note trim" data-variant-target="remaining"<%= " hidden" unless inventory.remaining_note(size, colour) %>><%= inventory.remaining_note(size, colour) %></p>
+        <p class="stock-note trim" data-variant-target="soldOut"<%= " hidden" unless inventory.sold_out_note(colour) %>><%= inventory.sold_out_note(colour) %></p>
+      </div>
+    <% end %>
+
+    <%# Price and Buy together, as on the release pages. Buy goes to the
+        Bandcamp listing for the chosen colour. %>
+    <div class="price-row">
+      <% if product.price %><span class="price-row__price trim"><%= product.price %></span><% end %>
+      <% if sold_out %>
+        <%= render "shared/sold_out" %>
+      <% elsif (buy_url = product.buy_url_for(colour)).present? %>
+        <%= external_link_to "Buy", buy_url, class: "button",
+              data: { variant_target: "buy", buy_urls: product.buy_urls.to_json } %>
+      <% end %>
+    </div>
+
+    <%= render "shared/scatter", photos: product.scatter_pictures, seed: product.scatter_seed %>
+  </div>
+</article>

@@ -1,0 +1,131 @@
+/* Home feed: filter key, masonry columns, tiles */
+.feed {
+  max-width: calc(var(--container));
+  margin-inline: auto;
+}
+
+.feed__columns {
+  display: flex;
+  gap: var(--column-gap);
+  align-items: flex-start;
+}
+
+.feed__column {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--gap-section);
+  min-width: 0;
+}
+
+.tile__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--gap-group);
+}
+
+.tile__link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.tile__media {
+  margin-top: var(--gap-group);
+}
+
+.tile__caption {
+  margin-top: var(--gap-group);
+}
+
+/* Underlined on hover and keyboard focus, staying blue (Tomas, 5 Oct: not
+   white like links in running text) */
+.tile__link:focus-visible .tile__caption {
+  text-decoration: underline;
+}
+
+/* With a real pointer only (a tap on a phone leaves it "hovered") */
+@media (hover: hover) {
+  .tile__link:hover .tile__caption {
+    text-decoration: underline;
+  }
+}
+
+/* Filter key: fixed in the left margin, centred vertically */
+.filter-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-filter);
+  margin: 0 0 var(--gap-section);
+  padding: 0;
+  list-style: none;
+}
+
+.filter-key a {
+  text-decoration: none;
+}
+
+/* The active filter with its × (clear) beside it */
+.filter-key__item {
+  display: flex;
+  gap: var(--gap-filter);
+}
+
+/* A square: as wide as a tag is tall (6 + cap height + 6) */
+.filter-key__clear {
+  width: calc(2 * var(--tag-pad-block) + 1cap);
+  padding-inline: 0;
+  text-align: center;
+}
+
+@media (min-width: 1240px) {
+  .filter-key {
+    position: fixed;
+    top: 50%;
+    left: var(--page-margin);
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 0;
+    transform: translateY(-50%);
+  }
+}
+
+/* Phones: one column in feed order */
+@media (max-width: 767px) {
+  /* Every tile the full width, so its label sits at the right edge even
+     before its photo loads */
+  .feed__columns {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--gap-section);
+  }
+
+  .feed__column {
+    display: contents;
+  }
+
+  /* One row spread edge to edge; counts hidden to fit */
+  .filter-key {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+  }
+
+  .filter-key__count {
+    display: none;
+  }
+
+  /* Phones have no filters, but a filtered page (reached from a tile's
+     chip) shows which one is on, with its × back to everything */
+  .filter-nav.filter-nav--active {
+    display: block;
+  }
+
+  .filter-nav--active .filter-key__item:not(:has(.is-current)) {
+    display: none;
+  }
+
+  .tile {
+    order: var(--feed-order);
+  }
+}

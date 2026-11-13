@@ -1,0 +1,50 @@
+# Media lives on Cloudflare R2, through its S3-compatible API.
+#
+# Uploads happen only on Tomas's Mac (Avo and the audio scripts), with the R2
+# keys from .env (see .env.example). The static build never talks to R2: pages
+# link straight to the public bucket's address (config.x.media_host), built
+# from each file's key by MediaUrls. No page uses Active Storage's own routes,
+# since there is no Rails behind the published site.
+#
+# The checksum settings keep the AWS SDK to the checks R2 supports.
+
+test:
+  service: Disk
+  root: <%= Rails.root.join("tmp/storage") %>
+
+# Stands in for R2 when there are no keys: the static build in CI, which only
+# needs the files' keys, never the files.
+without_keys:
+  service: Disk
+  root: <%= Rails.root.join("tmp/storage") %>
+
+# Public media: images, event recordings and release preview clips, served at
+# media.margate-electronics.org.
+cloudflare_r2:
+  service: S3
+  access_key_id: <%= ENV["R2_ACCESS_KEY_ID"] %>
+  secret_access_key: <%= ENV["R2_SECRET_ACCESS_KEY"] %>
+  region: auto
+  bucket: <%= ENV.fetch("R2_BUCKET_NAME", "margate-electronics-media") %>
+  endpoint: https://<%= ENV.fetch("R2_ACCOUNT_ID", "account-id-not-set") %>.r2.cloudflarestorage.com
+  force_path_style: true
+  request_checksum_calculation: when_required
+  response_checksum_validation: when_required
+
+# Private: full release files (masters). No public address, never linked.
+# Tests keep them in a local folder instead.
+cloudflare_r2_masters:
+<% if Rails.env.test? %>
+  service: Disk
+  root: <%= Rails.root.join("tmp/storage/masters") %>
+<% else %>
+  service: S3
+  access_key_id: <%= ENV["R2_ACCESS_KEY_ID"] %>
+  secret_access_key: <%= ENV["R2_SECRET_ACCESS_KEY"] %>
+  region: auto
+  bucket: <%= ENV.fetch("R2_MASTERS_BUCKET_NAME", "margate-electronics-masters") %>
+  endpoint: https://<%= ENV.fetch("R2_ACCOUNT_ID", "account-id-not-set") %>.r2.cloudflarestorage.com
+  force_path_style: true
+  request_checksum_calculation: when_required
+  response_checksum_validation: when_required
+<% end %>
