@@ -134,19 +134,15 @@
   }
 }
 
-/* The whole row opens the entry: its title's link covers the row */
-.ledger tr {
-  position: relative;
+/* The whole row opens the entry: row-link_controller passes a click on the
+   row to its title's link (a link stretched over the row with CSS covered
+   other rows in Safari) */
+.ledger tbody tr {
+  cursor: pointer;
 }
 
 .ledger__title a {
   text-decoration: none;
-}
-
-.ledger__title a::after {
-  content: "";
-  position: absolute;
-  inset: 0;
 }
 
 /* Linked body text: white and underlined on hover and keyboard focus */
@@ -156,8 +152,12 @@
 }
 
 @media (hover: hover) {
-  .ledger tbody tr:hover .ledger__title a {
+  .ledger tbody tr:hover {
     color: var(--color-text-white);
+  }
+
+  .ledger tbody tr:hover .ledger__title a {
+    color: inherit;
     text-decoration: underline;
   }
 }

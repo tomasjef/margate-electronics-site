@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_05_200000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_10_220000) do
   create_table "about_pages", force: :cascade do |t|
     t.text "body"
     t.text "artists"
@@ -173,6 +173,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_05_200000) do
     t.boolean "show_tile_text", default: true, null: false
     t.integer "reshuffle", default: 0, null: false
     t.integer "tape_stock"
+    t.boolean "show_stockist_line", default: true, null: false
     t.index ["slug"], name: "index_releases_on_slug", unique: true
   end
 

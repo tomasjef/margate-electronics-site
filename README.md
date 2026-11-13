@@ -1,4 +1,4 @@
-> Public snapshot of the private working repository, taken from commit `a01ad83`.
+> Public snapshot of the private working repository, taken from commit `40f355c`.
 > The content database ships without its admin user and sessions.
 
 # Margate Electronics
@@ -48,7 +48,6 @@ bin/ci           # all the checks; bin/rails test:system for the browser tests
 
 ## Docs
 
-- `CLAUDE.md`: scope, stack, design system and conventions (the current state)
 - `docs/decisions.md`: decisions as they were made, a dated log
 - `docs/build-plan.md`: milestones and what's next
 - `docs/cutover.md`: the switch to margate-electronics.org on 1 Oct, and the way back

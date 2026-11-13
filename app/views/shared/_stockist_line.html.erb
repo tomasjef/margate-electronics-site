@@ -1,11 +1,11 @@
 <%# Where else to find the tape, under the price and the tapes-remaining
     line: plain text, never a button (Bandcamp stays the one action). Nothing
-    before the release date (shops won't have it yet), or without stockists.
+    before the release date (shops won't have it yet), without stockists, or when it's switched off on the release.
     release: a Release %>
-<% unless (release.release_date && release.release_date > Date.current) || !Stockist.exists? %>
+<% unless (release.release_date && release.release_date > Date.current) || !Stockist.exists? || !release.show_stockist_line? %>
   <% if release.sold_out? || release.tape_sold_out? %>
-    <p class="stock-note stockist-line trim">Sold out on Bandcamp. A few copies may still be in shops, see <%= link_to "stockists", stockists_path %>.</p>
+    <p class="stock-note stockist-line trim">Sold out on Bandcamp. May still be in shops, see <%= link_to "stockists", stockists_path %>.</p>
   <% else %>
-    <p class="stock-note stockist-line trim">Also in select record shops: see <%= link_to "stockists", stockists_path %></p>
+    <p class="stock-note stockist-line trim">Also available from our <%= link_to "stockists", stockists_path %></p>
   <% end %>
 <% end %>

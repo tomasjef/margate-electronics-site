@@ -2,7 +2,7 @@
 
 Settled decisions, as a dated log. Add to this during a session so later
 sessions do not reopen them. A later decision overrides an earlier one on the
-same subject; `CLAUDE.md` describes the current state.
+same subject; the project notes describes the current state.
 
 ## 6 Oct 2026, logo
 
@@ -202,9 +202,9 @@ same subject; `CLAUDE.md` describes the current state.
   deployed to Cloudflare Pages by GitHub Actions (on push and daily). No
   production Rails server, so no Hetzner, Coolify or Neon. Phase 2's cart
   server side is a Cloudflare Worker with D1 and Stripe Embedded Checkout.
-  Decided by Tomas outside this repo; CLAUDE.md and the build plan were merged
+  Decided by Tomas outside this repo; the project notes and the build plan were merged
   from his versions on 27 Sep.
-- **The signed-off design stays.** Tomas's pasted CLAUDE.md carried the
+- **The signed-off design stays.** Tomas's pasted project notes carried the
   pre-sign-off design rules (greyscale images, a 4/8/16 spacing scale, Plex
   700); he chose the signed-off design instead.
 - **Newsletter: our form posts straight to MailerLite** from the static page;
@@ -436,7 +436,7 @@ same subject; `CLAUDE.md` describes the current state.
 ## 28 Sep 2026, M3 and M4
 
 - **Tickets link out to each event's platform**; ME#13 stays on OutSavvy
-  (Tomas). CLAUDE.md no longer says Ticket Tailor.
+  (Tomas). the project notes no longer says Ticket Tailor.
 - **Link previews** on every page: title from the heading, description from
   the page's own first non-italic paragraph (~200 characters), image = the
   main photo cropped 1200x630 from the top (`gravity=top`: `auto` cut the
@@ -513,7 +513,7 @@ same subject; `CLAUDE.md` describes the current state.
 ## 27 Sep 2026, audio by path
 
 - **Audio is referenced by path, not through Active Storage** (Tomas's updated
-  CLAUDE.md). Live recordings stay where they are at the top level of the
+  the project notes). Live recordings stay where they are at the top level of the
   public `archivalrecs` bucket (the current site reads them through
   `tracks.json`; don't move them before the cutover). Release previews are
   90-second clips made locally with ffmpeg into `archivalrecs/previews/`;
@@ -744,7 +744,7 @@ same subject; `CLAUDE.md` describes the current state.
 - **Release credits are a separate block with a colour option**: blue
   (default) or white per release (an admin option in M1). ME004 and ME003
   are blue; white was tried and switched back. White on #cccccc is about
-  1.6:1, below the 4.5:1 in CLAUDE.md, so it is an exception if used.
+  1.6:1, below the 4.5:1 in the project notes, so it is an exception if used.
 
 - **No visible heading in the newsletter dialog**: just the email field and
   Subscribe (the dialog is named "Newsletter sign up" for screen readers). Opening the dialog puts the cursor in the email field; opening
@@ -821,7 +821,7 @@ same subject; `CLAUDE.md` describes the current state.
   `preload="none"`. Stimulus stand-in: M4 replaces it with the shared
   transport (React island, keeps playing across pages), 128kbps previews and
   signed URLs. Note: that bucket serves a master publicly today, which the
-  audio rules in CLAUDE.md say should not happen at launch.
+  audio rules in the project notes say should not happen at launch.
 
 - **Lightbox Prev and Next.** "← Prev" bottom left and "Next →" bottom right
   (arrow keys too), stepping through every image on the page in page order,
@@ -904,7 +904,7 @@ same subject; `CLAUDE.md` describes the current state.
   (`Masonry.split`). On phones it is one column in feed order.
 - **Footer, logo and filter key are fixed on wide screens (1240px and up)**,
   taken from the 822px home frame. The header scrolls away.
-- **Images are greyscale until hover**, per CLAUDE.md, although Figma shows
+- **Images are greyscale until hover**, per the project notes, although Figma shows
   colour.
 - **Figma MCP limit (Starter plan)** stopped exports for the release and
   apparel photos. They are dashed placeholders until exported.
@@ -948,11 +948,11 @@ same subject; `CLAUDE.md` describes the current state.
   which are off the scale.
 - **Tokens not in Figma variables.** Figma only defines Body/Smaller,
   Body/Normal, tag/white, tag/releases, tag/prints and tag/apparel. Background,
-  ink, the event tag colour, spacing and layout widths come from CLAUDE.md and
+  ink, the event tag colour, spacing and layout widths come from the project notes and
   frame measurements. Adding them as Figma variables would make Figma the single
   source.
 - **Vite owns JS and CSS.** CSS lives in `app/assets/stylesheets` (so tokens stay
-  where CLAUDE.md says) but is imported by the Vite entrypoint, not linked by
+  where the project notes says) but is imported by the Vite entrypoint, not linked by
   Propshaft. Propshaft remains for images and gem assets.
 - **Hotwire via npm.** `@hotwired/turbo-rails` and `@hotwired/stimulus` come from
   npm. The `turbo-rails` and `stimulus-rails` gems are kept for view helpers.
@@ -963,3 +963,9 @@ same subject; `CLAUDE.md` describes the current state.
   custom properties cannot be used there. There is no 390 frame in Figma yet.
 - **Chrome links (header, footer) are not underlined**, matching Figma, and
   underline on hover. Links in body copy are underlined.
+
+- **Shorter stockists line** (Tomas, 10 Oct): "Also available from our stockists" and, sold out on Bandcamp, "Sold out on Bandcamp. May still be in shops, see stockists." Not "record shops": art and design shops stock the tapes too. Listing each release's shops was tried and dropped as too long.
+
+- **Stockists line switch** (Tomas, 10 Oct): each release has a "Stockists line" on/off (`show_stockist_line`, on to start), to hide the line once the shops have sold out too.
+
+- **Stockists line, final words** (Tomas, 10 Oct): "Also available from our stockists" (the word is the link); sold out on Bandcamp "Sold out on Bandcamp. May still be in shops, see stockists."

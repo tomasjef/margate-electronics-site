@@ -44,7 +44,7 @@
       <h2 id="archive-events" class="tag tag--event">Events</h2>
       <%# Explicit table roles: on phones the rows stack (display: block),
           and Safari's VoiceOver then stops reading it as a table without them %>
-      <table class="ledger ledger--events" role="table">
+      <table class="ledger ledger--events" role="table" data-controller="row-link" data-action="click->row-link#open">
         <thead role="rowgroup">
           <tr role="row"><th scope="col" role="columnheader" class="ledger__date">Date</th><th scope="col" role="columnheader" class="ledger__title">Event</th><th scope="col" role="columnheader" class="ledger__lineup">Lineup</th><th scope="col" role="columnheader" class="ledger__count">Recordings</th></tr>
         </thead>
@@ -65,7 +65,7 @@
     <% if @releases.any? %>
       <section class="detail__section" aria-labelledby="archive-releases">
         <h2 id="archive-releases" class="tag tag--release">Releases</h2>
-        <table class="ledger ledger--releases" role="table">
+        <table class="ledger ledger--releases" role="table" data-controller="row-link" data-action="click->row-link#open">
           <thead role="rowgroup">
             <tr role="row"><th scope="col" role="columnheader" class="ledger__no">Cat #</th><th scope="col" role="columnheader" class="ledger__artist">Artist</th><th scope="col" role="columnheader" class="ledger__title">Title</th><th scope="col" role="columnheader" class="ledger__format">Format</th><th scope="col" role="columnheader" class="ledger__date">Date</th><th scope="col" role="columnheader" class="ledger__status">Status</th></tr>
           </thead>

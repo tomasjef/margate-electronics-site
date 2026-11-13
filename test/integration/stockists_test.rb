@@ -76,7 +76,7 @@ class StockistsTest < ActionDispatch::IntegrationTest
       Release.find_by!(slug: "me003").update!(tape_stock: 9)
       get "/releases/me003"
       assert_select ".stock-notes .stock-note:first-child", text: "9 of 25 tapes remaining"
-      assert_select ".stock-notes .stockist-line", text: "Also in select record shops: see stockists"
+      assert_select ".stock-notes .stockist-line", text: "Also available from our stockists"
       assert_select ".stockist-line a[href='/stockists/']:not([target])", text: "stockists"
       assert_select ".price-row a.button", 1, "Bandcamp stays the one button"
     end
@@ -89,7 +89,7 @@ class StockistsTest < ActionDispatch::IntegrationTest
     end
     travel_to Date.new(2026, 10, 9) do
       get "/releases/me004"
-      assert_select ".stockist-line", text: /Also in select record shops/
+      assert_select ".stockist-line", text: /Also available from our stockists/
     end
   end
 
@@ -97,10 +97,21 @@ class StockistsTest < ActionDispatch::IntegrationTest
     travel_to Date.new(2026, 10, 1) do
       Release.find_by!(slug: "me003").update!(tape_stock: 0)
       get "/releases/me003"
-      assert_select ".stockist-line", text: "Sold out on Bandcamp. A few copies may still be in shops, see stockists."
+      assert_select ".stockist-line", text: "Sold out on Bandcamp. May still be in shops, see stockists."
       Release.find_by!(slug: "me003").update!(tape_stock: 5, sold_out: true)
       get "/releases/me003"
       assert_select ".stockist-line", text: /\ASold out on Bandcamp/
+    end
+  end
+
+  test "the stockists line can be switched off on a release" do
+    travel_to Date.new(2026, 10, 1) do
+      release = Release.find_by!(slug: "me003")
+      get "/releases/me003"
+      assert_select ".stockist-line", 1
+      release.update!(show_stockist_line: false)
+      get "/releases/me003"
+      assert_select ".stockist-line", 0
     end
   end
 

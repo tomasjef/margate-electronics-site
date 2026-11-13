@@ -10,17 +10,20 @@ class PagesTest < ActionDispatch::IntegrationTest
   end
 
   test "upcoming events have Add to Calendar, a calendar file of the night" do
-    get "/events/me-13"
-    assert_select ".price-row a.button[href='/events/me-13/calendar.ics'][data-turbo=false]", text: "Add to Calendar"
-    get "/events/me-13/calendar.ics"
-    assert_response :success
-    assert_equal "text/calendar", response.media_type
-    assert_includes response.body, "DTSTART;TZID=Europe/London:20261009T190000"
-    get "/events/me-12"
-    assert_select "a[href$='calendar.ics']", 0
+    travel_to Date.new(2026, 9, 28) do
+      get "/events/me-13"
+      assert_select ".price-row a.button[href='/events/me-13/calendar.ics'][data-turbo=false]", text: "Add to Calendar"
+      get "/events/me-13/calendar.ics"
+      assert_response :success
+      assert_equal "text/calendar", response.media_type
+      assert_includes response.body, "DTSTART;TZID=Europe/London:20261009T190000"
+      get "/events/me-12"
+      assert_select "a[href$='calendar.ics']", 0
+    end
   end
 
   test "the Archive lists every event and release, newest first, and the artists" do
+    travel_to Date.new(2026, 9, 28)
     get "/archive/"
     assert_select ".breadcrumb__chip", 0 # the top line names it
     assert_select ".site-header__status", text: "Index"

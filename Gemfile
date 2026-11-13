@@ -23,7 +23,14 @@ gem "solid_queue"
 gem "bootsnap", require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-gem "image_processing", "~> 1.2"
+gem "image_processing", "~> 2.2"
+# image_processing 2 no longer brings these itself: ruby-vips reads an upload's
+# width and height (Active Storage's analyser; Image#width and #height lay out
+# the photos), mini_magick makes the dithered stand-ins (Dither). Loaded only
+# when used, never at boot: ruby-vips needs libvips, which the deploy's
+# machine doesn't have (only the Mac makes images).
+gem "ruby-vips", "~> 2.2", require: false
+gem "mini_magick", "~> 5.0", require: false
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -54,7 +61,7 @@ gem "vite_rails", "~> 3.11"
 gem "turbo-rails", "~> 2.0"
 gem "stimulus-rails", "~> 1.3"
 
-gem "avo", "~> 4.2"
+gem "avo", "~> 4.3"
 
 
 # Static export: crawls the app and writes the site into build/ [https://github.com/benpickles/parklife-rails]
@@ -62,4 +69,4 @@ gem "parklife-rails", "~> 0.3"
 
 # Media on Cloudflare R2 through its S3-compatible API: Active Storage uploads
 # from the admin, and the preview clips and file copies in the audio scripts
-gem "aws-sdk-s3", "~> 1.0", require: false
+gem "aws-sdk-s3", "~> 1.235", require: false

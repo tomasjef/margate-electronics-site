@@ -6,11 +6,11 @@ Launch: **Friday 9 October 2026**, Margate Electronics #13 at Margate Arts Club.
 https://margate-electronics.org (switched on 1 Oct, see `docs/cutover.md`),
 with stock read from Bandcamp. Next: the phase 2 cart below. The milestones
 are kept as the record of how it was built; where a detail changed later
-(e.g. previews now 45 seconds, the newsletter a page), `CLAUDE.md` has the
+(e.g. previews now 45 seconds, the newsletter a page), the project notes has the
 current state.
 
 Phase 1 is a static catalogue site on Cloudflare Pages. Tickets link out to
-the event's ticket platform (OutSavvy for ME#13), tapes link out to Bandcamp. See `CLAUDE.md` for the architecture
+the event's ticket platform (OutSavvy for ME#13), tapes link out to Bandcamp. See the project notes for the architecture
 and the static build rules.
 
 ## How to use this file

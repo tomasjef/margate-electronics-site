@@ -40,12 +40,12 @@ makes going back instant.
    `margate-electronics.org` and `www`. This is the way back if needed.
    (Probably four `A` records for the apex, 185.199.108–111.153, and a
    `CNAME` for www to `tomasjef.github.io`.)
-3. **Claude:** a last full check of staging: every page, the players and bar,
+3. **Developer:** a last full check of staging: every page, the players and bar,
    the newsletter form, `bin/ci` and the browser tests.
 
 ## On the day
 
-1. **Claude:** change `SITE_URL` in `.github/workflows/deploy.yml` from
+1. **Developer:** change `SITE_URL` in `.github/workflows/deploy.yml` from
    `https://staging.margate-electronics.org` to
    `https://margate-electronics.org`, and push. The build then writes the
    real address into link previews, the canonical links, `sitemap.xml`, and
@@ -63,7 +63,7 @@ makes going back instant.
    - **When:** hostname equals `www.margate-electronics.org`;
    - **Then:** dynamic redirect to `concat("https://margate-electronics.org", http.request.uri.path)`,
      status 301, preserve the query string.
-5. **Claude checks**, and reports each:
+5. **Developer checks**, and reports each:
    - https://margate-electronics.org shows the new site (response headers
      from Cloudflare Pages, not GitHub), on a phone and a laptop;
    - every page in `sitemap.xml` answers 200, a made-up address shows the
@@ -92,7 +92,7 @@ makes going back instant.
 2. **Tomas:** DNS → Records: recreate the records from the screenshot
    (proxied, as before). The old GitHub Pages site is still built, so it
    answers again within a minute or two.
-3. **Claude:** revert the `SITE_URL` commit, so staging goes back to being
+3. **Developer:** revert the `SITE_URL` commit, so staging goes back to being
    noindex everywhere with `Disallow` in robots.txt.
 
 ## Analytics (any time before launch)

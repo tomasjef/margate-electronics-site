@@ -40,6 +40,8 @@ class Avo::Resources::Release < Avo::BaseResource
     field :credits, as: :tiptap, help: "'© 2026 Margate Electronics' (the release year) is added at the end for you. Enter starts a new paragraph, Shift+Enter a new line in the same one. Select text for italic or White."
 
     # The home page tile
+    field :show_stockist_line, as: :boolean, name: "Stockists line", hide_on: :index,
+      help: "The line under the price pointing to the stockists. Switch off when the shops have sold out too."
     field :show_tile_text, as: :boolean, name: "Text on the home tile", hide_on: :index,
       help: "Show the text under the tile's photo: the info lines, and 'Out on …' while it's a pre-order."
     field :tile_ratio, as: :select, options: Avo::Resources::Image::SHAPES, include_blank: "The photo's own shape",

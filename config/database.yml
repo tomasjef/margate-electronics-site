@@ -1,6 +1,6 @@
 # SQLite. The site is static: Rails runs only on Tomas's Mac, and the content
 # lives in storage/content.sqlite3, which is committed to the repo (see
-# CLAUDE.md, "Content database"). Development edits it; the static build reads
+# the project notes, "Content database"). Development edits it; the static build reads
 # it in production mode.
 default: &default
   adapter: sqlite3

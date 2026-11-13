@@ -61,6 +61,7 @@
   --weight-regular: 400;
   --weight-title: 500;            /* Heading/H1 is Plex Mono Medium */
   --line-normal: 1.3;             /* Figma line height "auto": Plex's own 1.3 */
+  --line-prose: 1.5;              /* running text (About, descriptions): looser to read in paragraphs (Tomas, 27 Oct) */
 
   /* Components */
   /* Chips and buttons share one size: 30 tall (10 + cap height + 10).
@@ -104,6 +105,7 @@
     --page-margin: var(--space-15);
     --text-body: var(--input-text-mobile);  /* 16px on phones, the same as form fields (14 on wider screens) */
     --text-caption: var(--text-small);      /* 12px on phones: smaller strains in italic */
+    --line-prose: var(--line-normal);       /* running text back at the base 1.3 on phones (1.5 from 768px up); Tomas, 13 Nov */
   }
 }
 

@@ -110,9 +110,14 @@
   margin-top: var(--gap-group);
 }
 
-/* Running text: a blank line between paragraphs, including after the metadata */
+/* Running text: looser leading than lists and ledgers, and a blank line
+   between paragraphs, including after the metadata */
+.prose {
+  line-height: var(--line-prose);
+}
+
 .prose p + p {
-  margin-top: calc(var(--text-body) * var(--line-normal));
+  margin-top: calc(var(--text-body) * var(--line-prose));
 }
 
 /* Links in body text: underlined; white on hover and keyboard focus, still
@@ -135,6 +140,11 @@
   margin-top: var(--gap-related);
   padding: 0;
   list-style: none;
+  line-height: var(--line-prose); /* sits in the About text, so it matches its leading (Tomas, 2 Nov) */
+}
+
+#artists-title {
+  line-height: var(--line-prose);
 }
 
 /* About is text only, no photo to match: the text column (5 grid columns,
